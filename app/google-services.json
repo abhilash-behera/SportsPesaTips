@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "686494090332",
+    "firebase_url": "https://football-predictions-2487c.firebaseio.com",
+    "project_id": "football-predictions-2487c",
+    "storage_bucket": "football-predictions-2487c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686494090332:android:199a23aaca01c13d",
+        "android_client_info": {
+          "package_name": "com.football.predictions"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686494090332-heokbe771uq5abqoitmc7pomq0nnie43.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.football.predictions",
+            "certificate_hash": "5c1f19be9d07ea70fcb53201e24e38df979a95ab"
+          }
+        },
+        {
+          "client_id": "686494090332-kf3j8g6tvv3ktnjboauuttai2nav9ao7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAD4kmVuF20WrFnSdLjRVmyk6doT77TdSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686494090332-kf3j8g6tvv3ktnjboauuttai2nav9ao7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
