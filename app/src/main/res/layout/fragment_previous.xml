@@ -5,7 +5,49 @@
     android:layout_height="match_parent"
     tools:context="com.football.predictions.previous">
 
-    <LinearLayout
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/webView" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/progressBar"
+        android:layout_below="@+id/webView"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/webView"/>
+    <!--<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/previous_top_native_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="10dp"
+                android:orientation="vertical"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:id="@+id/previous_bottom_native_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="10dp"
+                android:orientation="vertical"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+    </ScrollView>-->
+    <!--<LinearLayout
         android:id="@+id/native_ad_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +80,7 @@
         android:id="@+id/adViewContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"/>-->
+
 
 </RelativeLayout>

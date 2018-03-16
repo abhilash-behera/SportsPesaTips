@@ -10,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:cardElevation="6dp"
-        app:cardCornerRadius="3dp">
+        app:cardElevation="4dp"
+        android:layout_margin="6dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:background="#fff">
             <LinearLayout
                 android:id="@+id/ll_header"
                 android:layout_width="match_parent"
@@ -73,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 android:gravity="center"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

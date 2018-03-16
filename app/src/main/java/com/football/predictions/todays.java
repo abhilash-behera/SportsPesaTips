@@ -5,15 +5,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,23 +31,32 @@ import com.facebook.ads.AdView;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
 import com.football.predictions.R;
+import com.football.predictions.retrofit.ApiClient;
+import com.football.predictions.retrofit.PhoneTodayResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class todays extends Fragment {
-
-    private WebView webView;
     private View rootView;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private WebView webView;
+
+    /*private WebView webView;
     private AdView bannerAdView;
 
     private NativeAd nativeAd;
     private LinearLayout nativeAdContainer;
-    private LinearLayout nativeAdLayout;
+    private LinearLayout nativeAdLayout;*/
 
     public todays() {
         // Required empty public constructor
@@ -55,9 +69,32 @@ public class todays extends Fragment {
         /// Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_todays, container, false);
 
+        webView = (WebView)rootView.findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.loadUrl("http://sportpesatips.dx.am/mybanner.php");
+        webView.setWebViewClient(new WebViewClient(){
+            public void onPageFinished(WebView view, String url) {
+                webView.loadUrl("javascript:MyApp.resize(document.getElementById('banner').scrollHeight)");
+                super.onPageFinished(view, url);
+            }
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url != null ) {
+                    view.getContext().startActivity(
+                            new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
+                } else {
+                    return false;
+                }
+            }
 
+            public void onReceivedError(WebView webView, int errorCode, String description, String failingUrl) {
+                webView.loadUrl("file:///android_asset/error.html");
+            }
+        });
+        webView.addJavascriptInterface(this, "MyApp");
 
-        webView = (WebView)rootView.findViewById(R.id.webview);
+        /*webView = (WebView)rootView.findViewById(R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         webView.setHorizontalScrollBarEnabled(false);
@@ -77,22 +114,67 @@ public class todays extends Fragment {
             public void onReceivedError(WebView webView, int errorCode, String description, String failingUrl) {
                 webView.loadUrl("file:///android_asset/error.html");
             }
-        });
+        });*/
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         /*MobileAds.initialize(getContext(), "ca-app-pub-1591993844409076~8351341971");
         AdView mAdView = (AdView) view.findViewById(R.id.adViewa);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);*/
-        try{
+        /*try{
             showBannerAd();
             showNativeAd();
-        }catch (Exception ignored){}
+        }catch (Exception ignored){}*/
+        progressBar=rootView.findViewById(R.id.progressBar);
+        recyclerView=rootView.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        Call<PhoneTodayResponse> call= ApiClient.getClient().getPhoneTodayGames();
+        call.enqueue(new Callback<PhoneTodayResponse>() {
+            @Override
+            public void onResponse(Call<PhoneTodayResponse> call, Response<PhoneTodayResponse> response) {
+                Log.d("awesome","Got response: "+response.body().getData().size());
+                progressBar.setVisibility(View.GONE);
+                if(response.body().getData().size()==0){
+                    TextView textView=new TextView(getActivity());
+                    textView.setText("Sorry!! No Games Present.\nPlease come back later.");
+                    textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    textView.setLayoutParams(layoutParams);
+                    ((RelativeLayout)rootView).addView(textView);
+
+                }else{
+                    ArrayList<String> nativeAdIds=new ArrayList<>();
+                    nativeAdIds.add("342304149587187_354849548332647"); //todays top native
+                    nativeAdIds.add("342304149587187_354849671665968"); //todays middle native
+                    nativeAdIds.add("342304149587187_354849784999290"); //todays bottom native
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),response.body().getData(),nativeAdIds));
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PhoneTodayResponse> call, Throwable t) {
+                Log.d("awesome","Got failure: "+t.getLocalizedMessage());
+            }
+        });
         return rootView;
     }
 
+    @JavascriptInterface
+    public void resize(final float height) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("awesome","height: "+height);
+                RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(getResources().getDisplayMetrics().widthPixels, (int) (height * getResources().getDisplayMetrics().density));
+                webView.setLayoutParams(new RelativeLayout.LayoutParams(layoutParams));
+            }
+        });
+    }
+
     private void showBannerAd() {
-        RelativeLayout adViewContainer = (RelativeLayout)rootView.findViewById(R.id.adViewContainer);
+        /*RelativeLayout adViewContainer = (RelativeLayout)rootView.findViewById(R.id.adViewContainer);
 
         try{
             bannerAdView = new AdView(getActivity(), "342304149587187_342507869566815", AdSize.BANNER_HEIGHT_50);
@@ -128,12 +210,12 @@ public class todays extends Fragment {
                 }
             });
             bannerAdView.loadAd();
-        }catch (Exception ignored){}
+        }catch (Exception ignored){}*/
 
     }
 
     private void showNativeAd() {
-        try{
+        /*try{
             nativeAd = new NativeAd(getActivity(), "342304149587187_342508306233438");
             nativeAd.setAdListener(new AdListener() {
 
@@ -218,7 +300,7 @@ public class todays extends Fragment {
 
             // Request an ad
             nativeAd.loadAd();
-        }catch (Exception ignored){}
+        }catch (Exception ignored){}*/
 
     }
 

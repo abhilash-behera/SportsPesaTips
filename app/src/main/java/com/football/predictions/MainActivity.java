@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showInterstitialAd();
+                    showInterstitialAd("342304149587187_342506506233618"); //main activity interstitial
                 }
-            },18000);
+            },15000);
         }
     }
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity
                     home home = new home();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, home, "home").commit();
+                    showInterstitialAd("342304149587187_354861778331424"); //VIP interstitial
                 }
             }
         } else if (id == R.id.todaysmatches) {
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity
                     todays Todays = new todays();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, Todays, "todays").commit();
+                    showInterstitialAd("342304149587187_354856838331918"); //todays interstitial
                 }
             }
         } else if (id == R.id.previousmatches) {
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                     previous Previous = new previous();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, Previous, "previous").commit();
+                    showInterstitialAd("342304149587187_354864758331126"); //previous interstitial
                 }
             }
         } else if (id == R.id.nav_rateus) {
@@ -187,6 +190,7 @@ public class MainActivity extends AppCompatActivity
             if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
             else {
                 startActivity(new Intent(MainActivity.this, about.class));
+                showInterstitialAd("342304149587187_356787844805484"); //about interstitial
             }
 
         }
@@ -196,8 +200,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void showInterstitialAd() {
-        interstitialAd = new InterstitialAd(this, "342304149587187_342506506233618");
+    private void showInterstitialAd(final String interstitialAdId) {
+        interstitialAd = new InterstitialAd(this, interstitialAdId);
         interstitialAd.setAdListener(new AbstractAdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
@@ -207,7 +211,7 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            showInterstitialAd();
+                            showInterstitialAd(interstitialAdId);
                         }
                     },30000);
                 }

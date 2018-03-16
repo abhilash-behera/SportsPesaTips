@@ -5,7 +5,7 @@
         <item
             android:id="@+id/home"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="Home" />
+            android:title="Today's VIP" />
         <item
             android:id="@+id/todaysmatches"
             android:icon="@drawable/ic_today_black_24dp"
