@@ -132,18 +132,16 @@ public class tomorrows_vip extends Fragment {
                 Log.d("awesome","Got response: "+response.body().getData().size());
                 progressBar.setVisibility(View.GONE);
                 if(response.body().getData().size()==0){
-                    TextView textView=new TextView(getActivity());
-                    textView.setText("Sorry!! No Games Present.\nPlease come back later.");
-                    textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    textView.setLayoutParams(layoutParams);
-                    ((RelativeLayout)rootView).addView(textView);
+                    recyclerView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    txtError.setVisibility(View.VISIBLE);
 
                 }else{
                     ArrayList<String> nativeAdIds=new ArrayList<>();
-                    nativeAdIds.add("342304149587187_354848578332744"); //previous top native
-                    nativeAdIds.add("342304149587187_354849124999356"); //previous middle native
-                    nativeAdIds.add("342304149587187_354849218332680"); //previous bottom native
+                    nativeAdIds.add(getResources().getString(R.string.tomorrows_vip_a)); //previous top native
+                    nativeAdIds.add(getResources().getString(R.string.tomorrows_vip_b)); //previous middle native
+                    nativeAdIds.add(getResources().getString(R.string.tomorrows_vip_c)); //previous bottom native
+
 
                     if(response.body().getData().size()==0){
                         recyclerView.setVisibility(View.GONE);
@@ -492,5 +490,7 @@ public class tomorrows_vip extends Fragment {
             previousBottomNative.loadAd();
         }catch (Exception ignored){}
     }*/
+
+
 
 }

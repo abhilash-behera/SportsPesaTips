@@ -18,14 +18,12 @@
             android:orientation="vertical"
             android:padding="5dp"
             android:background="#fff">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:gravity="center">
+                android:paddingTop="2dp">
 
                 <ImageView
                     android:id="@+id/native_ad_icon"
@@ -38,7 +36,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingLeft="5dp">
+                    android:paddingLeft="5dp"
+                    android:id="@+id/linearLayout1"
+                    android:layout_toEndOf="@+id/native_ad_icon"
+                    android:layout_toRightOf="@+id/native_ad_icon"
+                    android:layout_toLeftOf="@+id/ad_choices_container"
+                    android:layout_toStartOf="@+id/ad_choices_container">
 
                     <TextView
                         android:id="@+id/native_ad_title"
@@ -63,11 +66,15 @@
 
                 <LinearLayout
                     android:id="@+id/ad_choices_container"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:orientation="horizontal" />
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
+
+                </LinearLayout>
+            </RelativeLayout>
 
             <com.facebook.ads.MediaView
                 android:id="@+id/native_ad_media"

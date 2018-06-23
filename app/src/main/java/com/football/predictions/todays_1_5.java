@@ -143,9 +143,9 @@ public class todays_1_5 extends Fragment {
 
                 }else{
                     ArrayList<String> nativeAdIds=new ArrayList<>();
-                    nativeAdIds.add("342304149587187_354848578332744"); //previous top native
-                    nativeAdIds.add("342304149587187_354849124999356"); //previous middle native
-                    nativeAdIds.add("342304149587187_354849218332680"); //previous bottom native
+                    nativeAdIds.add(getResources().getString(R.string.todays_1_5_a)); //previous top native
+                    nativeAdIds.add(getResources().getString(R.string.todays_1_5_b)); //previous middle native
+                    nativeAdIds.add(getResources().getString(R.string.todays_1_5_c)); //previous bottom native
 
                     ArrayList<Game> modifiedGameList=new ArrayList<>();
                     for(Game game:response.body().getData()){

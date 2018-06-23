@@ -25,13 +25,16 @@ import com.facebook.ads.AbstractAdListener;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.InterstitialAd;
-
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private InterstitialAd interstitialAd;
+    private com.google.android.gms.ads.InterstitialAd admobInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +67,16 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showInterstitialAd("342304149587187_342506506233618"); //main activity interstitial
+                    showInterstitialAd(getResources().getString(R.string.inter_15_sec)); //main activity interstitial
                 }
             },15000);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showAdmobInterstitial(getResources().getString(R.string.admob_interstitial));
+                }
+            },60000);
         }
     }
 
@@ -121,19 +131,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.todays_matches) {
-            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays");
-            if(fragment==null){
-                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
-                else {
-                    setTitle("Today's Matches");
-                    todays Todays = new todays();
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_main, Todays, "todays").commit();
-                    showInterstitialAd("342304149587187_354856838331918"); //todays interstitial
-                }
-            }
-        } else if (id == R.id.previous_matches) {
+        if (id == R.id.previous_matches) {
             Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous");
             if(fragment==null){
                 if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity
                     previous Previous = new previous();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, Previous, "previous").commit();
-                    showInterstitialAd("342304149587187_354864758331126"); //previous interstitial
+                    showInterstitialAd(getResources().getString(R.string.previous_inter)); //previous interstitial
                 }
             }
         } else if(id==R.id.previous_1_5){
@@ -154,7 +152,7 @@ public class MainActivity extends AppCompatActivity
                     previous_1_5 previous_1_5=new previous_1_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,previous_1_5,"previous_1_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.previous_1_5_inter));
                 }
             }
         }else if(id==R.id.previous_2_5){
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                     previous_2_5 previous_2_5=new previous_2_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,previous_2_5,"previous_2_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.previous_2_5_inter));
                 }
             }
         }else if(id==R.id.previous_3_5){
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity
                     previous_3_5 previous_3_5=new previous_3_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,previous_3_5,"previous_3_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.previous_3_5_inter));
                 }
             }
         }else if(id==R.id.previous_sure){
@@ -190,7 +188,7 @@ public class MainActivity extends AppCompatActivity
                     previous_sure_tips previous_sure_tips=new previous_sure_tips();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,previous_sure_tips,"previous_sure").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.previous_sure_inter));
                 }
             }
         }else if(id==R.id.previous_vip){
@@ -202,10 +200,22 @@ public class MainActivity extends AppCompatActivity
                     previous_vip previous_vip=new previous_vip();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,previous_vip,"previous_vip").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.previous_vip_inter));
                 }
             }
-        }else if(id==R.id.todays_1_5){
+        }else if (id == R.id.todays_matches) {
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else {
+                    setTitle("Today's Matches");
+                    todays Todays = new todays();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main, Todays, "todays").commit();
+                    showInterstitialAd(getResources().getString(R.string.todays_inter)); //todays interstitial
+                }
+            }
+        } else if(id==R.id.todays_1_5){
             Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays_1_5");
             if(fragment==null){
                 if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
@@ -214,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                     todays_1_5 todays_1_5=new todays_1_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,todays_1_5,"todays_1_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.todays_1_5_inter));
                 }
             }
         }else if(id==R.id.todays_2_5){
@@ -226,7 +236,7 @@ public class MainActivity extends AppCompatActivity
                     todays_2_5 todays_2_5=new todays_2_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,todays_2_5,"todays_2_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.todays_2_5_inter));
                 }
             }
         }else if(id==R.id.todays_3_5){
@@ -238,7 +248,7 @@ public class MainActivity extends AppCompatActivity
                     todays_3_5 todays_3_5=new todays_3_5();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,todays_3_5,"todays_3_5").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.todays_3_5_inter));
                 }
             }
         }else if(id==R.id.todays_vip){
@@ -250,7 +260,7 @@ public class MainActivity extends AppCompatActivity
                     todays_vip todays_vip=new todays_vip();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,todays_vip,"todays_vip").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.todays_vip_inter));
                 }
             }
         }else if(id==R.id.sure_tips){
@@ -262,7 +272,67 @@ public class MainActivity extends AppCompatActivity
                     sure_tips sure_tips=new sure_tips();
                     FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main,sure_tips,"sure_tips").commit();
-                    //todo add interstitial ad
+                    showInterstitialAd(getResources().getString(R.string.todays_sure_inter));
+                }
+            }
+        }else if(id==R.id.tomorrows_matches){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("tomorrows_matches");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.tomorrows_matches));
+                    tomorrows tomorrows=new tomorrows();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,tomorrows,"tomorrows_matches").commit();
+                    showInterstitialAd(getResources().getString(R.string.tomorrows_inter));
+                }
+            }
+        }else if(id==R.id.tomorrows_1_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("tomorrows_1_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.tomorrows_1_5));
+                    tomorrows_1_5 tomorrows_1_5=new tomorrows_1_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,tomorrows_1_5,"tomorrows_1_5").commit();
+                    showInterstitialAd(getResources().getString(R.string.tomorrows_1_5_inter));
+                }
+            }
+        }else if(id==R.id.tomorrows_2_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("tomorrows_2_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.tomorrows_2_5));
+                    tomorrows_2_5 tomorrows_2_5=new tomorrows_2_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,tomorrows_2_5,"tomorrows_2_5").commit();
+                    showInterstitialAd(getResources().getString(R.string.tomorrows_2_5_inter));
+                }
+            }
+        }else if(id==R.id.tomorrows_3_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("tomorrows_3_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.tomorrows_3_5));
+                    tomorrows_3_5 tomorrows_3_5=new tomorrows_3_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,tomorrows_3_5,"tomorrows_3_5").commit();
+                    showInterstitialAd(getResources().getString(R.string.tomorrows_3_5_inter));
+                }
+            }
+        }else if(id==R.id.tomorrows_vip){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("tomorrows_vip");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.tomorrows_vip));
+                    tomorrows_vip tomorrows_vip=new tomorrows_vip();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,tomorrows_vip,"tomorrows_vip").commit();
+                    showInterstitialAd(getResources().getString(R.string.tomorrows_vip_inter));
                 }
             }
         }else if (id == R.id.nav_rateus) {
@@ -360,6 +430,34 @@ public class MainActivity extends AppCompatActivity
             }
         });
         interstitialAd.loadAd();
+    }
+
+    private void showAdmobInterstitial(final String adId){
+        admobInterstitial=new com.google.android.gms.ads.InterstitialAd(this);
+        admobInterstitial.setAdUnitId(adId);
+        AdRequest adRequest=new AdRequest.Builder().addTestDevice("493C01A0BB55FCED482A594F8E4023E0").build();
+        admobInterstitial.loadAd(adRequest);
+        admobInterstitial.setAdListener(new AdListener(){
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                Log.d("awesome","Failed to load admob interstitial: "+i);
+                Handler handler=new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAdmobInterstitial(adId);
+                    }
+                },60000);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.d("awesome","Admob interstitial loaded");
+                admobInterstitial.show();
+            }
+        });
     }
 
 

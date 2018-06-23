@@ -148,26 +148,28 @@ public class previous extends Fragment {
                 Log.d("awesome","Got response: "+response.body().getData().size());
                 progressBar.setVisibility(View.GONE);
                 if(response.body().getData().size()==0){
-                    TextView textView=new TextView(getActivity());
-                    textView.setText("Sorry!! No Games Present.\nPlease come back later.");
-                    textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    textView.setLayoutParams(layoutParams);
-                    ((RelativeLayout)rootView).addView(textView);
-
+                    recyclerView.setVisibility(View.GONE);
+                    txtError.setVisibility(View.VISIBLE);
                 }else{
                     ArrayList<String> nativeAdIds=new ArrayList<>();
-                    nativeAdIds.add("342304149587187_354848578332744"); //previous top native
-                    nativeAdIds.add("342304149587187_354849124999356"); //previous middle native
-                    nativeAdIds.add("342304149587187_354849218332680"); //previous bottom native
+                    nativeAdIds.add(getResources().getString(R.string.previous_a)); //previous top native
+                    nativeAdIds.add(getResources().getString(R.string.previous_b)); //previous middle native
+                    nativeAdIds.add(getResources().getString(R.string.previous_c)); //previous bottom native
 
-                    if(response.body().getData().size()==0){
+                    ArrayList<Game> modifiedList=new ArrayList<>();
+                    for(Game game:response.body().getData()){
+                        if(!game.getTip().toLowerCase().contains("over")&&!game.getTip().toLowerCase().contains("under")){
+                            modifiedList.add(game);
+                        }
+                    }
+
+                    if(modifiedList.size()==0){
                         recyclerView.setVisibility(View.GONE);
                         txtError.setVisibility(View.VISIBLE);
                     }else{
                         txtError.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        recyclerView.setAdapter(new GamesAdapter(getActivity(),response.body().getData(),nativeAdIds));
+                        recyclerView.setAdapter(new GamesAdapter(getActivity(),modifiedList,nativeAdIds));
                         recyclerView.getAdapter().notifyDataSetChanged();
                     }
 

@@ -143,9 +143,9 @@ public class previous_vip extends Fragment {
 
                 }else{
                     ArrayList<String> nativeAdIds=new ArrayList<>();
-                    nativeAdIds.add("342304149587187_354848578332744"); //previous top native
-                    nativeAdIds.add("342304149587187_354849124999356"); //previous middle native
-                    nativeAdIds.add("342304149587187_354849218332680"); //previous bottom native
+                    nativeAdIds.add(getResources().getString(R.string.previous_vip_a)); //previous top native
+                    nativeAdIds.add(getResources().getString(R.string.previous_vip_b)); //previous middle native
+                    nativeAdIds.add(getResources().getString(R.string.previous_vip_c)); //previous bottom native
 
                     if(response.body().getData().size()==0){
                         recyclerView.setVisibility(View.GONE);

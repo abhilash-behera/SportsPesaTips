@@ -1,6 +1,5 @@
 package com.football.predictions;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,21 +10,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdListener;
+import com.facebook.ads.AdSettings;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
-import com.football.predictions.GamesAdapter.MyViewHolder;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by abhilash on 4/3/18
@@ -53,6 +55,7 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public TextView txtTime;
         public TextView txtPrediction;
         public TextView txtOdd;
+        public RelativeLayout adRelativeLayout;
         public MyViewHolder(View view){
             super(view);
             txtLeague=view.findViewById(R.id.txtLeague);
@@ -61,6 +64,7 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             txtTime=view.findViewById(R.id.txtTime);
             txtPrediction=view.findViewById(R.id.txtPrediction);
             txtOdd=view.findViewById(R.id.txtOdd);
+            adRelativeLayout =view.findViewById(R.id.adRelativeLayout);
         }
     }
 
@@ -82,6 +86,7 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String nativeAdId=nativeAdIds.get(index++);
 
             final NativeAd nativeAd=new NativeAd(context,nativeAdId);
+            AdSettings.addTestDevice("efd101b1e7a6e6d15656dace954bb225");
             nativeAd.setAdListener(new AdListener() {
                 @Override
                 public void onError(Ad ad, AdError adError) {
@@ -204,7 +209,7 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (!(holder instanceof MyViewHolder)) {
             return;
         }
@@ -241,6 +246,85 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ((MyViewHolder) holder).txtTime.setText(game.getTime());
                 ((MyViewHolder) holder).txtTime.setBackground(context.getResources().getDrawable(R.drawable.frame_background));
             }
+
+            AdView adView=new AdView(context);
+            adView.setAdSize(AdSize.SMART_BANNER);
+
+            String fragment_tag=((MainActivity)context).getSupportFragmentManager().getFragments().get(0).getTag();
+            Log.d("awesome","fragment_tag="+fragment_tag);
+            if(fragment_tag.equalsIgnoreCase("previous")){
+                Log.d("awesome","Setting ad id for previous");
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous));
+            }
+            else if(fragment_tag.equalsIgnoreCase("previous_1_5")){
+                Log.d("awesome","Setting ad id for previous 1.5");
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous_1_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("previous_2_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous_2_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("previous_3_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous_3_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("previous_sure")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous_sure));
+            }
+            else if(fragment_tag.equalsIgnoreCase("previous_vip")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous_vip));
+            }
+            else if(fragment_tag.equalsIgnoreCase("todays")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays));
+            }
+            else if(fragment_tag.equalsIgnoreCase("todays_1_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays_1_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("todays_2_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays_2_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("todays_3_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays_3_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("sure_tips")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays_sure));
+            }
+            else if(fragment_tag.equalsIgnoreCase("todays_vip")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays_vip));
+            }
+            else if(fragment_tag.equalsIgnoreCase("tomorrows_matches")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_tomorrows));
+            }
+            else if(fragment_tag.equalsIgnoreCase("tomorrows_1_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_tomorrows_1_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("tomorrows_2_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_tomorrows_2_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("tomorrows_3_5")){
+                adView.setAdUnitId(context.getResources().getString(R.string.tomorrows_3_5));
+            }
+            else if(fragment_tag.equalsIgnoreCase("tomorrows_vip")){
+                adView.setAdUnitId(context.getResources().getString(R.string.admob_tomorrows_vip));
+            }
+
+            ((MyViewHolder) holder).adRelativeLayout.addView(adView);
+            AdRequest adRequest = new AdRequest.Builder().addTestDevice("493C01A0BB55FCED482A594F8E4023E0").build();
+            adView.loadAd(adRequest);
+
+            adView.setAdListener(new com.google.android.gms.ads.AdListener(){
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Log.d("awesome","Smart banner loaded");
+                    Log.d("awesome","Relative layout :"+((MyViewHolder) holder).adRelativeLayout.getLayoutParams().width+"*"+((MyViewHolder) holder).adRelativeLayout.getLayoutParams().height);
+
+                }
+
+                @Override
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    Log.d("awesome","Error in loading smart banners: "+i);
+                }
+            });
 
         }else{
             Log.d("awesome","index out of bounds");
