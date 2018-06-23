@@ -11,4 +11,30 @@
     <string name="facebook_app_id">342304149587187</string>
     <string name="fb_login_protocol_scheme">fb342304149587187</string>
 
+    <string name="previous">Previous</string>
+    <string name="previous_matches">Previous Matches</string>
+    <string name="previous_1.5">Previous Over 1.5</string>
+    <string name="previous_2.5">Previous Over 2.5</string>
+    <string name="previous_3.5">Previous Under 3.5</string>
+    <string name="previous_vip">Previous VIP</string>
+    <string name="previous_sure">Previous Sure Tips</string>
+
+    <string name="todays">Today\'s</string>
+    <string name="todays_matches">Today\'s Matches</string>
+    <string name="todays_1.5">Today\'s Over 1.5</string>
+    <string name="todays_2.5">Today\'s Over 2.5</string>
+    <string name="todays_3.5">Today\'s Under 3.5</string>
+    <string name="todays_vip">Today\'s VIP</string>
+    <string name="sure_tips">Today\'s Sure Tips</string>
+
+
+    <string name="tomorrows">Tomorrow\'s</string>
+    <string name="tomorrows_matches">Tomorrow\'s Matches</string>
+    <string name="tomorrows_1.5">Tomorrow\'s Over 1.5</string>
+    <string name="tomorrows_2.5">Tomorrow\'s Over 2.5</string>
+    <string name="tomorrows_3.5">Tomorrow\'s Under 3.5</string>
+    <string name="tomorrows_vip">Tomorrow\'s VIP</string>
+
+
+
 </resources>

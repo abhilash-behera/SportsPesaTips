@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        navigationView.setCheckedItem(R.id.previousmatches);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
         else {
@@ -121,20 +121,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.home) {
-
-            Fragment fragment=getSupportFragmentManager().findFragmentByTag("home");
-            if(fragment==null){
-                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
-                else {
-                    setTitle("Best Predictions");
-                    home home = new home();
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_main, home, "home").commit();
-                    showInterstitialAd("342304149587187_354861778331424"); //VIP interstitial
-                }
-            }
-        } else if (id == R.id.todaysmatches) {
+        if (id == R.id.todays_matches) {
             Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays");
             if(fragment==null){
                 if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
@@ -146,7 +133,7 @@ public class MainActivity extends AppCompatActivity
                     showInterstitialAd("342304149587187_354856838331918"); //todays interstitial
                 }
             }
-        } else if (id == R.id.previousmatches) {
+        } else if (id == R.id.previous_matches) {
             Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous");
             if(fragment==null){
                 if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
@@ -158,7 +145,127 @@ public class MainActivity extends AppCompatActivity
                     showInterstitialAd("342304149587187_354864758331126"); //previous interstitial
                 }
             }
-        } else if (id == R.id.nav_rateus) {
+        } else if(id==R.id.previous_1_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous_1_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.previous_1_5));
+                    previous_1_5 previous_1_5=new previous_1_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,previous_1_5,"previous_1_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.previous_2_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous_2_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.previous_2_5));
+                    previous_2_5 previous_2_5=new previous_2_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,previous_2_5,"previous_2_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.previous_3_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous_3_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.previous_3_5));
+                    previous_3_5 previous_3_5=new previous_3_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,previous_3_5,"previous_3_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.previous_sure){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous_sure");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.previous_sure));
+                    previous_sure_tips previous_sure_tips=new previous_sure_tips();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,previous_sure_tips,"previous_sure").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.previous_vip){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("previous_vip");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.previous_vip));
+                    previous_vip previous_vip=new previous_vip();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,previous_vip,"previous_vip").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.todays_1_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays_1_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.todays_1_5));
+                    todays_1_5 todays_1_5=new todays_1_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,todays_1_5,"todays_1_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.todays_2_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays_2_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.todays_2_5));
+                    todays_2_5 todays_2_5=new todays_2_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,todays_2_5,"todays_2_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.todays_3_5){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays_3_5");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.todays_3_5));
+                    todays_3_5 todays_3_5=new todays_3_5();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,todays_3_5,"todays_3_5").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.todays_vip){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("todays_vip");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.todays_vip));
+                    todays_vip todays_vip=new todays_vip();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,todays_vip,"todays_vip").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if(id==R.id.sure_tips){
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("sure_tips");
+            if(fragment==null){
+                if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();
+                else{
+                    setTitle(getResources().getString(R.string.sure_tips));
+                    sure_tips sure_tips=new sure_tips();
+                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_main,sure_tips,"sure_tips").commit();
+                    //todo add interstitial ad
+                }
+            }
+        }else if (id == R.id.nav_rateus) {
 
 
             if(!isConnected(MainActivity.this)) buildDialog(MainActivity.this).show();

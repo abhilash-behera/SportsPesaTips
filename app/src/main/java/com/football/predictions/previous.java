@@ -57,6 +57,7 @@ public class previous extends Fragment {
     private LinearLayout previousTopNativeAdLayout;
     private LinearLayout previousBottomNativeAdLayout;
     private WebView webView;
+    private TextView txtError;
 
     /*private WebView webView;
     private AdView bannerAdView;
@@ -76,7 +77,7 @@ public class previous extends Fragment {
                              Bundle savedInstanceState) {
         /// Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_previous, container, false);
-
+        txtError=rootView.findViewById(R.id.txtError);
         webView = (WebView)rootView.findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
@@ -137,6 +138,7 @@ public class previous extends Fragment {
         recyclerView=rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        progressBar.setVisibility(View.VISIBLE);
         //showPreviousTopNative();
         //showPreviousBottomNative();
         Call<PhonePreviousResponse> call= ApiClient.getClient().getPhonePreviousGames();
@@ -159,8 +161,16 @@ public class previous extends Fragment {
                     nativeAdIds.add("342304149587187_354849124999356"); //previous middle native
                     nativeAdIds.add("342304149587187_354849218332680"); //previous bottom native
 
-                    recyclerView.setAdapter(new GamesAdapter(getActivity(),response.body().getData(),nativeAdIds));
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    if(response.body().getData().size()==0){
+                        recyclerView.setVisibility(View.GONE);
+                        txtError.setVisibility(View.VISIBLE);
+                    }else{
+                        txtError.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        recyclerView.setAdapter(new GamesAdapter(getActivity(),response.body().getData(),nativeAdIds));
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                    }
+
                 }
             }
 
