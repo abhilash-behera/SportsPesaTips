@@ -6,145 +6,70 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="facebook_app_id">342304149587187</string>
     <string name="fb_login_protocol_scheme">fb342304149587187</string>
 
     <!--Previous Games-->
     <string name="previous">Previous</string>
     <string name="previous_matches">Previous Matches</string>
-    <string name="previous_1.5">Previous Over 1.5</string>
-    <string name="previous_2.5">Previous Over 2.5</string>
-    <string name="previous_3.5">Previous Under 3.5</string>
-    <string name="previous_vip">Previous VIP</string>
-    <string name="previous_sure">Previous Sure Tips</string>
 
     <!--Today's Games-->
     <string name="todays">Today\'s</string>
     <string name="todays_matches">Today\'s Matches</string>
-    <string name="todays_1.5">Today\'s Over 1.5</string>
-    <string name="todays_2.5">Today\'s Over 2.5</string>
-    <string name="todays_3.5">Today\'s Under 3.5</string>
-    <string name="todays_vip">Today\'s VIP</string>
-    <string name="sure_tips">Today\'s Sure Tips</string>
-
-    <!--Tomorrow's Games-->
-    <string name="tomorrows">Tomorrow\'s</string>
-    <string name="tomorrows_matches">Tomorrow\'s Matches</string>
-    <string name="tomorrows_1.5">Tomorrow\'s Over 1.5</string>
-    <string name="tomorrows_2.5">Tomorrow\'s Over 2.5</string>
-    <string name="tomorrows_3.5">Tomorrow\'s Under 3.5</string>
-    <string name="tomorrows_vip">Tomorrow\'s VIP</string>
 
 
     <!--FB audience network ad ids-->
     <string name="inter_15_sec">342304149587187_403102546840680</string>
-    <string name="previous_a">342304149587187_402916246859310</string>
-    <string name="previous_b">342304149587187_402916570192611</string>
-    <string name="previous_c">342304149587187_402916806859254</string>
+    <string name="previous_a">342304149587187_418434385307496</string>
+    <string name="previous_b">342304149587187_418434638640804</string>
+    <string name="previous_c">342304149587187_418434765307458</string>
     <string name="previous_inter">342304149587187_402917386859196</string>
+    <string name="inter_1">342304149587187_452599415224326</string>
+    <string name="rect_1">342304149587187_452598835224384</string>
+    <string name="nat_1">342304149587187_453606115123656</string>
 
-    <string name="previous_1_5_a">342304149587187_402922086858726</string>
-    <string name="previous_1_5_b">342304149587187_402924120191856</string>
-    <string name="previous_1_5_c">342304149587187_402924463525155</string>
-    <string name="previous_1_5_inter">342304149587187_402926170191651</string>
-
-    <string name="previous_2_5_a">342304149587187_402928766858058</string>
-    <string name="previous_2_5_b">342304149587187_402929296858005</string>
-    <string name="previous_2_5_c">342304149587187_402931776857757</string>
-    <string name="previous_2_5_inter">342304149587187_402933100190958</string>
-
-    <string name="previous_3_5_a">342304149587187_402933793524222</string>
-    <string name="previous_3_5_b">342304149587187_402939956856939</string>
-    <string name="previous_3_5_c">342304149587187_402941343523467</string>
-    <string name="previous_3_5_inter">342304149587187_402941646856770</string>
-
-    <string name="previous_sure_a">342304149587187_402996733517928</string>
-    <string name="previous_sure_b">342304149587187_402997330184535</string>
-    <string name="previous_sure_c">342304149587187_402997880184480</string>
-    <string name="previous_sure_inter">342304149587187_402998620184406</string>
-    
-    <string name="previous_vip_a">342304149587187_402943086856626</string>
-    <string name="previous_vip_b">342304149587187_402943566856578</string>
-    <string name="previous_vip_c">342304149587187_402944333523168</string>
-    <string name="previous_vip_inter">342304149587187_402945176856417</string>
-
-    <string name="todays_a">342304149587187_402999106851024</string>
-    <string name="todays_b">342304149587187_402999376850997</string>
-    <string name="todays_c">342304149587187_403001990184069</string>
+    <string name="todays_a">342304149587187_418431991974402</string>
+    <string name="todays_b">342304149587187_418432298641038</string>
+    <string name="todays_c">342304149587187_418432485307686</string>
     <string name="todays_inter">342304149587187_403002286850706</string>
 
-    <string name="todays_1_5_a">342304149587187_403003200183948</string>
-    <string name="todays_1_5_b">342304149587187_403003496850585</string>
-    <string name="todays_1_5_c">342304149587187_403003946850540</string>
-    <string name="todays_1_5_inter">342304149587187_403004210183847</string>
-
-    <string name="todays_2_5_a">342304149587187_403005590183709</string>
-    <string name="todays_2_5_b">342304149587187_403005923517009</string>
-    <string name="todays_2_5_c">342304149587187_403007990183469</string>
-    <string name="todays_2_5_inter">342304149587187_403008293516772</string>
-
-    <string name="todays_3_5_a">342304149587187_403008666850068</string>
-    <string name="todays_3_5_b">342304149587187_403009376849997</string>
-    <string name="todays_3_5_c">342304149587187_403010643516537</string>
-    <string name="todays_3_5_inter">342304149587187_403011036849831</string>
-
-    <string name="todays_sure_a">342304149587187_403013533516248</string>
-    <string name="todays_sure_b">342304149587187_403013870182881</string>
-    <string name="todays_sure_c">342304149587187_403014183516183</string>
-    <string name="todays_sure_inter">342304149587187_403014476849487</string>
-
-    <string name="todays_vip_a">342304149587187_403011563516445</string>
-    <string name="todays_vip_b">342304149587187_403011876849747</string>
-    <string name="todays_vip_c">342304149587187_403012076849727</string>
-    <string name="todays_vip_inter">342304149587187_403012636849671</string>
-
-    <string name="tomorrows_a">342304149587187_403022060182062</string>
-    <string name="tomorrows_b">342304149587187_403022280182040</string>
-    <string name="tomorrows_c">342304149587187_403022476848687</string>
-    <string name="tomorrows_inter">342304149587187_403022896848645</string>
-
-    <string name="tomorrows_1_5_a">342304149587187_403023516848583</string>
-    <string name="tomorrows_1_5_b">342304149587187_403024066848528</string>
-    <string name="tomorrows_1_5_c">342304149587187_403024293515172</string>
-    <string name="tomorrows_1_5_inter">342304149587187_403024810181787</string>
-
-    <string name="tomorrows_2_5_a">342304149587187_403025343515067</string>
-    <string name="tomorrows_2_5_b">342304149587187_403025610181707</string>
-    <string name="tomorrows_2_5_c">342304149587187_403025883515013</string>
-    <string name="tomorrows_2_5_inter">342304149587187_403026226848312</string>
-
-    <string name="tomorrows_3_5_a">342304149587187_403026883514913</string>
-    <string name="tomorrows_3_5_b">342304149587187_403029553514646</string>
-    <string name="tomorrows_3_5_c">342304149587187_403030193514582</string>
-    <string name="tomorrows_3_5_inter">342304149587187_403030853514516</string>
-
-    <string name="tomorrows_vip_a">342304149587187_403031790181089</string>
-    <string name="tomorrows_vip_b">342304149587187_403032050181063</string>
-    <string name="tomorrows_vip_c">342304149587187_403032570181011</string>
-    <string name="tomorrows_vip_inter">342304149587187_403033310180937</string>
 
     <string name="admob_previous">ca-app-pub-1591993844409076/9815657379</string>
-    <string name="admob_previous_1_5">ca-app-pub-1591993844409076/6614778967</string>
-    <string name="admob_previous_2_5">ca-app-pub-1591993844409076/2404071217</string>
-    <string name="admob_previous_3_5">ca-app-pub-1591993844409076/2404071217</string>
-    <string name="admob_previous_sure">ca-app-pub-1591993844409076/2425635407</string>
-    <string name="admob_previous_vip">ca-app-pub-1591993844409076/6666340732</string>
 
     <string name="admob_todays">ca-app-pub-1591993844409076/4257591828</string>
-    <string name="admob_todays_1_5">ca-app-pub-1591993844409076/6283606470</string>
-    <string name="admob_todays_2_5">ca-app-pub-1591993844409076/3082728067</string>
-    <string name="admob_todays_3_5">ca-app-pub-1591993844409076/1933297928</string>
-    <string name="admob_todays_sure">ca-app-pub-1591993844409076/3299733375</string>
-    <string name="admob_todays_vip">ca-app-pub-1591993844409076/5433150118</string>
-
-    <string name="admob_tomorrows">ca-app-pub-1591993844409076/4968038264</string>
-    <string name="admob_tomorrows_1_5">ca-app-pub-1591993844409076/3080241521</string>
-    <string name="admob_tomorrows_2_5">ca-app-pub-1591993844409076/6444771460</string>
-    <string name="admob_tomorrows_3_5">ca-app-pub-1591993844409076/2012779859</string>
-    <string name="admob_tomorrows_vip">ca-app-pub-1591993844409076/6115676398</string>
 
     <string name="admob_interstitial">ca-app-pub-1591993844409076/5742349295</string>
+
+    <string name="btn_previous">&lt;&lt; Prev</string>
+    <string name="btn_next">Next &gt;&gt;</string>
+    <string name="presage_interstitial">8bd6b8f0-6690-0136-5c4f-0242ac120003</string>
+    <string name="opt_in_video">a494f180-6690-0136-5c50-0242ac120003</string>
+    <string name="fb_inter_60_sec">342304149587187_422172408267027</string>
+
+
+    <!--FB ads for september-->
+    <string name="sep_15_sec_inter">342304149587187_469151103569157</string>
+    <string name="sep_every_15_sec_inter">342304149587187_469151256902475</string>
+
+    <string name="sep_previous_bottom">342304149587187_469149870235947</string>
+    <string name="sep_previous_middle">342304149587187_469149696902631</string>
+    <string name="sep_previous_top">342304149587187_469149610235973</string>
+    <string name="sep_previous_inter">342304149587187_469150823569185</string>
+
+    <string name="sep_todays_bottom">342304149587187_469149383569329</string>
+    <string name="sep_todays_middle">342304149587187_469149280236006</string>
+    <string name="sep_todays_top">342304149587187_469149160236018</string>
+    <string name="sep_todays_inter">342304149587187_469150570235877</string>
+
+    <string name="sep_about_banner">342304149587187_469150323569235</string>
+    <string name="sep_about_native">342304149587187_469150083569259</string>
+
+    <!--Admob ads for september-->
+    <string name="inter_60_sec_admob">ca-app-pub-1591993844409076/3530125985</string>
+    <string name="sep_banner_admob">ca-app-pub-1591993844409076/4910779978</string>
+
+    <!--Fb banner ad ids-->
+    <string name="todays_banner">342304149587187_482094095608191</string>
+    <string name="previous_banner">342304149587187_482094325608168</string>
 
 </resources>

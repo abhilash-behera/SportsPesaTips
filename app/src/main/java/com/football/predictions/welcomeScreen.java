@@ -11,15 +11,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
+//import com.facebook.FacebookSdk;
+//import com.facebook.appevents.AppEventsLogger;
 
 public class welcomeScreen extends AppCompatActivity {
 
 
     private static int SPLASH_TIME_OUT = 1500;
 
-    private AppEventsLogger logger;
+    //private AppEventsLogger logger;
 
 
     @Override
@@ -43,7 +43,7 @@ public class welcomeScreen extends AppCompatActivity {
 
                 if(!isConnected(welcomeScreen.this)) buildDialog(welcomeScreen.this).show();
                 else {
-                    logger=AppEventsLogger.newLogger(welcomeScreen.this);
+                    //logger=AppEventsLogger.newLogger(welcomeScreen.this);
                     Intent i = new Intent(welcomeScreen.this, MainActivity.class);
                     startActivity(i);
                     logSentFriendRequestEvent();
@@ -58,7 +58,7 @@ public class welcomeScreen extends AppCompatActivity {
 
     }
     public void logSentFriendRequestEvent () {
-        logger.logEvent("sentFriendRequest");
+        //logger.logEvent("sentFriendRequest");
     }
 
     public boolean isConnected(Context context) {

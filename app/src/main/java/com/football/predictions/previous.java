@@ -4,7 +4,6 @@ package com.football.predictions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,55 +16,42 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.ads.MediaView;
-import com.facebook.ads.NativeAd;
-import com.football.predictions.R;
 import com.football.predictions.retrofit.ApiClient;
-import com.football.predictions.retrofit.PhonePreviousResponse;
-import com.football.predictions.retrofit.PhonePreviousResponse;
+import com.football.predictions.retrofit.GameResponse;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import io.presage.Presage;
+import io.presage.common.AdConfig;
+import io.presage.common.network.models.RewardItem;
+import io.presage.interstitial.optinvideo.PresageOptinVideo;
+import io.presage.interstitial.optinvideo.PresageOptinVideoCallback;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class previous extends Fragment {
     private View rootView;
     private ProgressBar progressBar;
-    private NativeAd previousBottomNative;
-    private NativeAd previousTopNative;
-    private LinearLayout previousTopNativeContainer;
-    private LinearLayout previousBottomNativeContainer;
-    private LinearLayout previousTopNativeAdLayout;
-    private LinearLayout previousBottomNativeAdLayout;
     private WebView webView;
     private TextView txtError;
+    private Button btnPrevious;
+    private Button btnNext;
+    private int currentPage;
+    private int totalPageCount;
 
-    /*private WebView webView;
-    private AdView bannerAdView;
-
-    private NativeAd nativeAd;
-    private LinearLayout nativeAdContainer;
-    private LinearLayout nativeAdLayout;*/
     private RecyclerView recyclerView;
+    private ArrayList<Game> originalGamesList=new ArrayList<>();
+    private ArrayList<Game> filteredGamesList=new ArrayList<>();
+    private ArrayList<String> nativeAdIds=new ArrayList<>();
+    private PresageOptinVideo presageOptinVideo;
 
     public previous() {
         // Required empty public constructor
@@ -76,8 +62,66 @@ public class previous extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /// Inflate the layout for this fragment
+
+        Presage.getInstance().start("272929", getActivity());
         rootView = inflater.inflate(R.layout.fragment_previous, container, false);
         txtError=rootView.findViewById(R.id.txtError);
+        btnPrevious=rootView.findViewById(R.id.btnPrevious);
+        btnNext=rootView.findViewById(R.id.btnNext);
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage==totalPageCount-1){
+                    showOptInVideo(getResources().getString(R.string.opt_in_video));
+                }
+                if(currentPage<totalPageCount){
+                    currentPage++;
+                    Log.d("pagenation","Current page: "+currentPage+" Total Page:"+totalPageCount);
+                    for(int i=0;i<4;i++){
+                        filteredGamesList.remove(0);
+                    }
+                    for(int i=0;i<4;i++){
+                        try{
+                            filteredGamesList.add(originalGamesList.get((4*currentPage)+i));
+                        }catch(Exception e){
+                            Log.d("pagenation","This is a silly exception");
+                        }
+                    }
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.previous_banner)));
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }else{
+                    Toast.makeText(getActivity(),"You are already on the last page !!!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage>0){
+                    currentPage--;
+                    Log.d("pagenation","Current page: "+currentPage+" Total Page:"+totalPageCount);
+                    try{
+                        for(int i=0;i<4;i++){
+                            filteredGamesList.remove(0);
+                        }
+                    }catch (Exception ignored){}
+
+                    for(int i=0;i<4;i++){
+                        try{
+                            filteredGamesList.add(originalGamesList.get((4*currentPage)+i));
+                        }catch(Exception e){
+                            Log.d("pagenation","This is a silly exception");
+                        }
+                    }
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.previous_banner)));
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }else{
+                    Toast.makeText(getActivity(),"You are already on the first page !!!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         webView = (WebView)rootView.findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
@@ -103,85 +147,113 @@ public class previous extends Fragment {
         });
         webView.addJavascriptInterface(this, "MyApp");
 
-        /*webView = (WebView)rootView.findViewById(R.id.webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.loadUrl("http://sportpesatips.dx.am/phoneprevious.php");
-        webView.setWebViewClient(new WebViewClient(){
-
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url != null ) {
-                    view.getContext().startActivity(
-                            new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            public void onReceivedError(WebView webView, int errorCode, String description, String failingUrl) {
-                webView.loadUrl("file:///android_asset/error.html");
-            }
-        });
-
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        *//*MobileAds.initialize(getContext(), "ca-app-pub-1591993844409076~8351341971");
-        AdView mAdView = (AdView) view.findViewById(R.id.adViewa);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);*//*
-        try{
-            showBannerAd();
-            showNativeAd();
-        }catch (Exception ignored){}
-*/      progressBar=rootView.findViewById(R.id.progressBar);
+        progressBar=rootView.findViewById(R.id.progressBar);
         recyclerView=rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         progressBar.setVisibility(View.VISIBLE);
         //showPreviousTopNative();
         //showPreviousBottomNative();
-        Call<PhonePreviousResponse> call= ApiClient.getClient().getPhonePreviousGames();
-        call.enqueue(new Callback<PhonePreviousResponse>() {
+        Call<GameResponse> call= ApiClient.getClient().getPhonePreviousGames();
+        call.enqueue(new Callback<GameResponse>() {
             @Override
-            public void onResponse(Call<PhonePreviousResponse> call, Response<PhonePreviousResponse> response) {
+            public void onResponse(Call<GameResponse> call, Response<GameResponse> response) {
                 Log.d("awesome","Got response: "+response.body().getData().size());
                 progressBar.setVisibility(View.GONE);
                 if(response.body().getData().size()==0){
                     recyclerView.setVisibility(View.GONE);
                     txtError.setVisibility(View.VISIBLE);
                 }else{
-                    ArrayList<String> nativeAdIds=new ArrayList<>();
-                    nativeAdIds.add(getResources().getString(R.string.previous_a)); //previous top native
-                    nativeAdIds.add(getResources().getString(R.string.previous_b)); //previous middle native
-                    nativeAdIds.add(getResources().getString(R.string.previous_c)); //previous bottom native
+//                    nativeAdIds.add(getResources().getString(R.string.previous_a)); //previous top native
+//                    nativeAdIds.add(getResources().getString(R.string.previous_b)); //previous middle native
+//                    nativeAdIds.add(getResources().getString(R.string.previous_c)); //previous bottom native
 
-                    ArrayList<Game> modifiedList=new ArrayList<>();
-                    for(Game game:response.body().getData()){
-                        if(!game.getTip().toLowerCase().contains("over")&&!game.getTip().toLowerCase().contains("under")){
-                            modifiedList.add(game);
+                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
+                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
+                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
+
+                    nativeAdIds.add(getResources().getString(R.string.sep_previous_top));
+                    nativeAdIds.add(getResources().getString(R.string.sep_previous_middle));
+                    nativeAdIds.add(getResources().getString(R.string.sep_previous_bottom));
+
+                    originalGamesList=response.body().getData();
+                    Log.d("pagenation","Total game size: "+originalGamesList.size());
+                    int totalSize=originalGamesList.size();
+                    for(int i=0;i<originalGamesList.size();i++){
+                        originalGamesList.get(i).setCount(totalSize-i);
+                    }
+                    totalPageCount=(int)(Math.ceil(originalGamesList.size()/4));
+                    Log.d("pagenation","Total page count: "+totalPageCount);
+                    currentPage=0;
+                    for(int i=0;i<4;i++){
+                        try{
+                            filteredGamesList.add(originalGamesList.get((4*currentPage)+i));
+                        }catch(Exception e){
+                            Log.d("pagenation","This is a silly exception");
                         }
                     }
-
-                    if(modifiedList.size()==0){
-                        recyclerView.setVisibility(View.GONE);
-                        txtError.setVisibility(View.VISIBLE);
-                    }else{
-                        txtError.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        recyclerView.setAdapter(new GamesAdapter(getActivity(),modifiedList,nativeAdIds));
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                    }
-
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.previous_banner)));
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<PhonePreviousResponse> call, Throwable t) {
+            public void onFailure(Call<GameResponse> call, Throwable t) {
                 Log.d("awesome","Got failure: "+t.getLocalizedMessage());
             }
         });
+
         return rootView;
+    }
+
+    private void showOptInVideo(String adId) {
+        AdConfig adConfig=new AdConfig(adId);
+        presageOptinVideo=new PresageOptinVideo(getActivity(),adConfig);
+        presageOptinVideo.setOptinVideoCallback(new PresageOptinVideoCallback() {
+            @Override
+            public void onAdRewarded(RewardItem rewardItem) {
+                Log.d("awesome","presage opt in reward received");
+            }
+
+            @Override
+            public void onAdAvailable() {
+                Log.d("awesome","presage opt in ad available");
+            }
+
+            @Override
+            public void onAdNotAvailable() {
+                Log.d("awesome","presage opt in ad not available");
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.d("awesome","presage opt in ad loaded");
+                if(presageOptinVideo.isLoaded()){
+                    presageOptinVideo.show();
+                }
+            }
+
+            @Override
+            public void onAdNotLoaded() {
+                Log.d("awesome","presage opt in ad not loaded");
+            }
+
+            @Override
+            public void onAdDisplayed() {
+                Log.d("awesome","presage opt in ad displayed");
+            }
+
+            @Override
+            public void onAdClosed() {
+                Log.d("awesome","presage opt in ad closed");
+            }
+
+            @Override
+            public void onAdError(int i) {
+                Log.d("awesome","presage opt in ad error");
+            }
+        });
+        presageOptinVideo.load();
     }
 
     @JavascriptInterface
@@ -195,318 +267,4 @@ public class previous extends Fragment {
             }
         });
     }
-
-    private void showBannerAd() {
-        /*RelativeLayout adViewContainer = (RelativeLayout)rootView.findViewById(R.id.adViewContainer);
-
-        try{
-            bannerAdView = new AdView(getActivity(), "342304149587187_342508672900068", AdSize.BANNER_HEIGHT_50);
-            adViewContainer.addView(bannerAdView);
-            bannerAdView.setAdListener(new AdListener() {
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    if(adError.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                        Handler handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showBannerAd();
-                            }
-                        },30000);
-                    }
-                    Log.d("awesome","Error in loading previous matches banner ad: "+adError.getErrorMessage());
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d("awesome","previous matches banner ad loaded: "+ad);
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                    Log.d("awesome","previous matches banner ad clicked: "+ad);
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                    Log.d("awesome","previous matches banner ad impression: "+ad);
-                }
-            });
-
-            bannerAdView.loadAd();
-        }catch (Exception ignored){}*/
-
-    }
-
-    private void showNativeAd() {
-        /*try{
-            nativeAd = new NativeAd(getActivity(), "342304149587187_342509276233341");
-            nativeAd.setAdListener(new AdListener() {
-
-                @Override
-                public void onError(Ad ad, AdError error) {
-                    // Ad error callback
-                    if(error.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                        Handler handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showNativeAd();
-                            }
-                        },30000);
-                    }
-                    Log.d("awesome","Error in opening previous fragment native ad: "+error.getErrorMessage());
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    // Ad loaded callback
-                    Log.d("awesome","previous fragment Native ad loaded: "+ad);
-                    if (nativeAd != null) {
-                        nativeAd.unregisterView();
-                    }
-
-                    // Add the Ad view into the ad container.
-                    nativeAdContainer = (LinearLayout)rootView.findViewById(R.id.native_ad_container);
-                    try{
-                        LayoutInflater inflater = LayoutInflater.from(getActivity());
-                        // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
-                        nativeAdLayout = (LinearLayout) inflater.inflate(R.layout.native_ad_layout, nativeAdContainer, false);
-                        nativeAdContainer.addView(nativeAdLayout);
-
-                        // Create native UI using the ad metadata.
-                        ImageView nativeAdIcon = (ImageView) nativeAdLayout.findViewById(R.id.native_ad_icon);
-                        TextView nativeAdTitle = (TextView) nativeAdLayout.findViewById(R.id.native_ad_title);
-                        MediaView nativeAdMedia = (MediaView) nativeAdLayout.findViewById(R.id.native_ad_media);
-                        TextView nativeAdSocialContext = (TextView) nativeAdLayout.findViewById(R.id.native_ad_social_context);
-                        TextView nativeAdBody = (TextView) nativeAdLayout.findViewById(R.id.native_ad_body);
-                        Button nativeAdCallToAction = (Button) nativeAdLayout.findViewById(R.id.native_ad_call_to_action);
-
-                        // Set the Text.
-                        nativeAdTitle.setText(nativeAd.getAdTitle());
-                        nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
-                        nativeAdBody.setText(nativeAd.getAdBody());
-                        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-
-                        // Download and display the ad icon.
-                        NativeAd.Image adIcon = nativeAd.getAdIcon();
-                        NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-                        // Download and display the cover image.
-                        nativeAdMedia.setNativeAd(nativeAd);
-
-                        // Add the AdChoices icon
-                        LinearLayout adChoicesContainer = (LinearLayout)rootView.findViewById(R.id.ad_choices_container);
-                        AdChoicesView adChoicesView = new AdChoicesView(getActivity(), nativeAd, true);
-                        adChoicesContainer.addView(adChoicesView);
-
-                        // Register the Title and CTA button to listen for clicks.
-                        List<View> clickableViews = new ArrayList<>();
-                        clickableViews.add(nativeAdTitle);
-                        clickableViews.add(nativeAdCallToAction);
-                        nativeAd.registerViewForInteraction(nativeAdContainer,clickableViews);
-                    }catch (Exception ignored){}
-
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                    // Ad clicked callback
-                    Log.d("awesome","previous fragment Native ad clicked: "+ad);
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                    // Ad impression logged callback
-                    Log.d("awesome","previous fragment Native ad impression: "+ad);
-                }
-            });
-
-            // Request an ad
-            nativeAd.loadAd();
-        }catch (Exception ignored){}
-*/
-    }
-
-    /*private void showPreviousTopNative(){
-        try{
-            previousTopNative = new NativeAd(getActivity(), "342304149587187_354848578332744");
-            previousTopNative.setAdListener(new AdListener() {
-
-                @Override
-                public void onError(Ad ad, AdError error) {
-                    // Ad error callback
-                    if(error.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                        Handler handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showPreviousTopNative();
-                            }
-                        },30000);
-                    }
-                    Log.d("awesome","Error in opening previous fragment top native ad: "+error.getErrorMessage());
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    // Ad loaded callback
-                    Log.d("awesome","previous fragment top Native ad loaded: "+ad);
-                    if (previousTopNative != null) {
-                        previousTopNative.unregisterView();
-                    }
-
-                    // Add the Ad view into the ad container.
-                    previousTopNativeContainer = (LinearLayout)rootView.findViewById(R.id.previous_top_native_container);
-                    try{
-                        LayoutInflater inflater = LayoutInflater.from(getActivity());
-                        // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
-                        previousTopNativeAdLayout = (LinearLayout) inflater.inflate(R.layout.native_ad_layout, previousTopNativeContainer, false);
-                        previousTopNativeContainer.addView(previousTopNativeAdLayout);
-
-                        // Create native UI using the ad metadata.
-                        ImageView nativeAdIcon = (ImageView) previousTopNativeAdLayout.findViewById(R.id.native_ad_icon);
-                        TextView nativeAdTitle = (TextView) previousTopNativeAdLayout.findViewById(R.id.native_ad_title);
-                        MediaView nativeAdMedia = (MediaView) previousTopNativeAdLayout.findViewById(R.id.native_ad_media);
-                        TextView nativeAdSocialContext = (TextView) previousTopNativeAdLayout.findViewById(R.id.native_ad_social_context);
-                        TextView nativeAdBody = (TextView) previousTopNativeAdLayout.findViewById(R.id.native_ad_body);
-                        Button nativeAdCallToAction = (Button) previousTopNativeAdLayout.findViewById(R.id.native_ad_call_to_action);
-
-                        // Set the Text.
-                        nativeAdTitle.setText(previousTopNative.getAdTitle());
-                        nativeAdSocialContext.setText(previousTopNative.getAdSocialContext());
-                        nativeAdBody.setText(previousTopNative.getAdBody());
-                        nativeAdCallToAction.setText(previousTopNative.getAdCallToAction());
-
-                        // Download and display the ad icon.
-                        NativeAd.Image adIcon = previousTopNative.getAdIcon();
-                        NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-                        // Download and display the cover image.
-                        nativeAdMedia.setNativeAd(previousTopNative);
-
-
-
-                        // Add the AdChoices icon
-                        LinearLayout adChoicesContainer = (LinearLayout)rootView.findViewById(R.id.ad_choices_container);
-                        AdChoicesView adChoicesView = new AdChoicesView(getActivity(), previousTopNative, true);
-                        adChoicesContainer.addView(adChoicesView);
-
-                        // Register the Title and CTA button to listen for clicks.
-                        List<View> clickableViews = new ArrayList<>();
-                        clickableViews.add(nativeAdTitle);
-                        clickableViews.add(nativeAdCallToAction);
-                        previousTopNative.registerViewForInteraction(previousTopNativeContainer,clickableViews);
-                    }catch (Exception ignored){}
-
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                    // Ad clicked callback
-                    Log.d("awesome","previous fragment bottom Native ad clicked: "+ad);
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                    // Ad impression logged callback
-                    Log.d("awesome","previous fragment bottom Native ad impression: "+ad);
-                }
-            });
-
-            // Request an ad
-            previousTopNative.loadAd();
-        }catch (Exception ignored){}
-    }
-
-    private void showPreviousBottomNative(){
-        try{
-            previousBottomNative = new NativeAd(getActivity(), "342304149587187_354849218332680");
-            previousBottomNative.setAdListener(new AdListener() {
-
-                @Override
-                public void onError(Ad ad, AdError error) {
-                    // Ad error callback
-                    if(error.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                        Handler handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showPreviousBottomNative();
-                            }
-                        },30000);
-                    }
-                    Log.d("awesome","Error in opening previous fragment bottom native ad: "+error.getErrorMessage());
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    // Ad loaded callback
-                    Log.d("awesome","previous fragment bottom Native ad loaded: "+ad);
-                    if (previousBottomNative != null) {
-                        previousBottomNative.unregisterView();
-                    }
-
-                    // Add the Ad view into the ad container.
-                    previousBottomNativeContainer = (LinearLayout)rootView.findViewById(R.id.previous_bottom_native_container);
-                    try{
-                        LayoutInflater inflater = LayoutInflater.from(getActivity());
-                        // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
-                        previousBottomNativeAdLayout = (LinearLayout) inflater.inflate(R.layout.native_ad_layout, previousBottomNativeContainer, false);
-                        previousBottomNativeContainer.addView(previousBottomNativeAdLayout);
-
-                        // Create native UI using the ad metadata.
-                        ImageView nativeAdIcon = (ImageView) previousBottomNativeAdLayout.findViewById(R.id.native_ad_icon);
-                        TextView nativeAdTitle = (TextView) previousBottomNativeAdLayout.findViewById(R.id.native_ad_title);
-                        MediaView nativeAdMedia = (MediaView) previousBottomNativeAdLayout.findViewById(R.id.native_ad_media);
-                        TextView nativeAdSocialContext = (TextView) previousBottomNativeAdLayout.findViewById(R.id.native_ad_social_context);
-                        TextView nativeAdBody = (TextView) previousBottomNativeAdLayout.findViewById(R.id.native_ad_body);
-                        Button nativeAdCallToAction = (Button) previousBottomNativeAdLayout.findViewById(R.id.native_ad_call_to_action);
-
-                        // Set the Text.
-                        nativeAdTitle.setText(previousBottomNative.getAdTitle());
-                        nativeAdSocialContext.setText(previousBottomNative.getAdSocialContext());
-                        nativeAdBody.setText(previousBottomNative.getAdBody());
-                        nativeAdCallToAction.setText(previousBottomNative.getAdCallToAction());
-
-                        // Download and display the ad icon.
-                        NativeAd.Image adIcon = previousBottomNative.getAdIcon();
-                        NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-                        // Download and display the cover image.
-                        nativeAdMedia.setNativeAd(previousBottomNative);
-
-
-
-                        // Add the AdChoices icon
-                        LinearLayout adChoicesContainer = (LinearLayout)rootView.findViewById(R.id.ad_choices_container);
-                        AdChoicesView adChoicesView = new AdChoicesView(getActivity(), previousBottomNative, true);
-                        adChoicesContainer.addView(adChoicesView);
-
-                        // Register the Title and CTA button to listen for clicks.
-                        List<View> clickableViews = new ArrayList<>();
-                        clickableViews.add(nativeAdTitle);
-                        clickableViews.add(nativeAdCallToAction);
-                        previousBottomNative.registerViewForInteraction(previousBottomNativeContainer,clickableViews);
-                    }catch (Exception ignored){}
-
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                    // Ad clicked callback
-                    Log.d("awesome","previous fragment bottom Native ad clicked: "+ad);
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                    // Ad impression logged callback
-                    Log.d("awesome","previous fragment bottom Native ad impression: "+ad);
-                }
-            });
-
-            // Request an ad
-            previousBottomNative.loadAd();
-        }catch (Exception ignored){}
-    }*/
 }

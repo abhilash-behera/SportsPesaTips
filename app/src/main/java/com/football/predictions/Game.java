@@ -44,91 +44,45 @@ public class Game implements Serializable {
     @Expose
     private String status;
 
-    public String getRecordID() {
-        return recordID;
-    }
+    private int count;
 
-    public void setRecordID(String recordID) {
-        this.recordID = recordID;
-    }
-
+    public int getCount(){return count;}
+    public void setCount(int count){this.count=count;}
     public String getTime() {
         return time;
     }
-
     public void setTime(String time) {
         this.time = time;
     }
-
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public String getLeague() {
         return league;
     }
-
-    public void setLeague(String league) {
-        this.league = league;
-    }
-
     public String getTeamA() {
         return teamA;
     }
-
-    public void setTeamA(String teamA) {
-        this.teamA = teamA;
-    }
-
     public String getTeamAscore() {
         return teamAscore;
     }
-
-    public void setTeamAscore(String teamAscore) {
-        this.teamAscore = teamAscore;
-    }
-
     public String getTeamB() {
         return teamB;
     }
-
-    public void setTeamB(String teamB) {
-        this.teamB = teamB;
-    }
-
     public String getTeamBscore() {
         return teamBscore;
     }
-
-    public void setTeamBscore(String teamBscore) {
-        this.teamBscore = teamBscore;
-    }
-
     public String getTip() {
         return tip;
     }
-
-    public void setTip(String tip) {
-        this.tip = tip;
-    }
-
     public String getOdds() {
         return odds;
     }
-
-    public void setOdds(String odds) {
-        this.odds = odds;
-    }
-
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
