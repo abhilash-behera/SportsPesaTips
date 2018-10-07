@@ -3,6 +3,7 @@ package com.football.predictions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -161,52 +162,69 @@ public class todays extends Fragment {
         call.enqueue(new Callback<GameResponse>() {
             @Override
             public void onResponse(Call<GameResponse> call, Response<GameResponse> response) {
-                Log.d("awesome","Got response: "+response.body().getData().size());
-                progressBar.setVisibility(View.GONE);
-                if(response.body().getData().size()==0){
-                    recyclerView.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    txtError.setVisibility(View.VISIBLE);
+                try {
+                    if(response.isSuccessful()){
+                        Log.d("awesome","Got response: "+response.body().getData().size());
+                        progressBar.setVisibility(View.GONE);
+                        if(response.body().getData().size()==0){
+                            recyclerView.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
+                            txtError.setVisibility(View.VISIBLE);
 
-                }else{
-                    //nativeAdIds.add(getResources().getString(R.string.todays_a)); //previous top native
-                    //nativeAdIds.add(getResources().getString(R.string.todays_b)); //previous middle native
-                    //nativeAdIds.add(getResources().getString(R.string.todays_c)); //previous bottom native
+                        }else{
+                            //nativeAdIds.add(getResources().getString(R.string.todays_a)); //previous top native
+                            //nativeAdIds.add(getResources().getString(R.string.todays_b)); //previous middle native
+                            //nativeAdIds.add(getResources().getString(R.string.todays_c)); //previous bottom native
 
-                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
-                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
-                    //nativeAdIds.add(getResources().getString(R.string.nat_1));
+                            //nativeAdIds.add(getResources().getString(R.string.nat_1));
+                            //nativeAdIds.add(getResources().getString(R.string.nat_1));
+                            //nativeAdIds.add(getResources().getString(R.string.nat_1));
 
-                    nativeAdIds.add(getResources().getString(R.string.sep_todays_top));
-                    nativeAdIds.add(getResources().getString(R.string.sep_todays_middle));
-                    nativeAdIds.add(getResources().getString(R.string.sep_todays_bottom));
+                            nativeAdIds.add(getResources().getString(R.string.sep_todays_top));
+                            nativeAdIds.add(getResources().getString(R.string.sep_todays_middle));
+                            nativeAdIds.add(getResources().getString(R.string.sep_todays_bottom));
 
 
-                    originalGamesList=response.body().getData();
-                    Log.d("pagenation","Total game size: "+originalGamesList.size());
-                    int totalSize=originalGamesList.size();
-                    for(int i=0;i<originalGamesList.size();i++){
-                        originalGamesList.get(i).setCount(totalSize-i);
-                    }
-                    totalPageCount=(int)(Math.ceil(originalGamesList.size()/4));
-                    Log.d("pagenation","Total page count: "+totalPageCount);
-                    currentPage=0;
-                    for(int i=0;i<4;i++){
-                        try{
-                            filteredGamesList.add(originalGamesList.get((4*currentPage)+i));
-                        }catch(Exception e){
-                            Log.d("pagenation","This is a silly exception");
+                            originalGamesList=response.body().getData();
+                            Log.d("pagenation","Total game size: "+originalGamesList.size());
+                            int totalSize=originalGamesList.size();
+                            for(int i=0;i<originalGamesList.size();i++){
+                                originalGamesList.get(i).setCount(totalSize-i);
+                            }
+                            totalPageCount=(int)(Math.ceil(originalGamesList.size()/4));
+                            Log.d("pagenation","Total page count: "+totalPageCount);
+                            currentPage=0;
+                            for(int i=0;i<4;i++){
+                                try{
+                                    filteredGamesList.add(originalGamesList.get((4*currentPage)+i));
+                                }catch(Exception e){
+                                    Log.d("pagenation","This is a silly exception");
+                                }
+                            }
+                            recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.todays_banner)));
+                            recyclerView.getAdapter().notifyDataSetChanged();
+
                         }
+                    }else {
+                        Snackbar.make(rootView,"some error occured! try again later",Snackbar.LENGTH_LONG).show();
                     }
-                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.todays_banner)));
-                    recyclerView.getAdapter().notifyDataSetChanged();
 
+                }catch (Exception e){
+                    Log.d("awesome","something went wrong"+e.toString());
                 }
+
             }
 
             @Override
             public void onFailure(Call<GameResponse> call, Throwable t) {
-                Log.d("awesome","Got failure in loading previous_1.5: "+t.getLocalizedMessage());
+                try{
+                    Log.d("awesome","Got failure in loading previous_1.5: "+t.getLocalizedMessage());
+                    Snackbar.make(rootView,"some error occured! try again later",Snackbar.LENGTH_LONG).show();
+
+                }catch (Exception e){
+                    Log.d("awesome","some error occured"+e.toString());
+                }
+
             }
         });
 

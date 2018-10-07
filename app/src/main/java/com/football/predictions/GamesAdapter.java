@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.AdError;
+import com.facebook.ads.AdIconView;
 import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
+import com.facebook.ads.NativeAdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -38,18 +40,18 @@ import java.util.Random;
 public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Game> games;
     private static final int GAME_VIEW=1;
-    private static final int FB_BANNER_AD_VIEW=2;
+    private static final int ADMOB_VIEW=2;
     private static final int FB_AD_VIEW=3;
     private Context context;
     private ArrayList<String> nativeAdIds;
     private int index=0;
     private String fbBannerAdId;
 
-    public GamesAdapter(Context context,ArrayList<Game> games,ArrayList<String> nativeAdIds,String fbBannerAdId){
+    public GamesAdapter(Context context,ArrayList<Game> games,ArrayList<String> fbNativeAdIds,String fbBannerId){
         this.games=games;
         this.context=context;
-        this.nativeAdIds=nativeAdIds;
-        this.fbBannerAdId=fbBannerAdId;
+        this.nativeAdIds=fbNativeAdIds;
+        this.fbBannerAdId=fbBannerId;
     }
 
     public class GameViewHolder extends RecyclerView.ViewHolder{
@@ -74,43 +76,58 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public class FbBannerAdViewHolder extends RecyclerView.ViewHolder{
-        public FbBannerAdViewHolder(final View itemView){
+    public class AdmobViewHolder extends RecyclerView.ViewHolder{
+        public com.google.android.gms.ads.AdView adView;
+        public AdmobViewHolder(final View itemView){
             super(itemView);
-            com.facebook.ads.AdView fbBannerAdView=new com.facebook.ads.AdView(context,fbBannerAdId, com.facebook.ads.AdSize.BANNER_HEIGHT_90);
-            LinearLayout adContainer = itemView.findViewById(R.id.banner_container);
-            adContainer.addView(fbBannerAdView);
-            fbBannerAdView.setAdListener(new AdListener() {
+            adView=itemView.findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.setAdListener(new com.google.android.gms.ads.AdListener(){
                 @Override
-                public void onError(Ad ad, AdError adError) {
-                    Log.d("awesome","Games adapter fb banner ad error: "+adError.getErrorMessage());
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    Log.d("awesome","Games adapter admob banner clicked");
                 }
 
                 @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d("awesome","Games adapter fb banner ad loaded: "+ad);
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    Log.d("awesome","Games adapter admob banner closed");
                 }
 
                 @Override
-                public void onAdClicked(Ad ad) {
-                    Log.d("awesome","Games adapter fb banner ad clicked");
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    Log.d("awesome","Games adapter admob banner error: "+i);
                 }
 
                 @Override
-                public void onLoggingImpression(Ad ad) {
-                    Log.d("awesome","Games adapter fb banner ad impression");
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Log.d("awesome","Games adapter admob banner loaded");
+                }
+
+                @Override
+                public void onAdOpened() {
+                    super.onAdOpened();
+                    Log.d("awesome","Games adapter admob banner opened");
+                }
+
+                @Override
+                public void onAdImpression() {
+                    super.onAdImpression();
+                    Log.d("awesome","Games adapter admob banner impression");
                 }
             });
-
-            fbBannerAdView.loadAd();
+            adView.loadAd(adRequest);
         }
     }
 
-    /*public class FbAdViewHolder extends RecyclerView.ViewHolder{
+    public class FbAdViewHolder extends RecyclerView.ViewHolder{
         public FbAdViewHolder(final View itemView){
             super(itemView);
-            *//*int random= new Random().nextInt(3);
-            Log.d("awesome","Random number: "+random);*//*
+            /*int random= new Random().nextInt(3);
+            Log.d("awesome","Random number: "+random);*/
             if(index==3){
                 index=0;
             }
@@ -118,74 +135,77 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String nativeAdId=nativeAdIds.get(index++);
 
             final NativeAd nativeAd=new NativeAd(context,nativeAdId);
-            nativeAd.setAdListener(new AdListener() {
+            nativeAd.setAdListener(new NativeAdListener() {
+                @Override
+                public void onMediaDownloaded(Ad ad) {
+                    Log.d("awesomme","Games fb native ad media downloaded");
+                }
+
                 @Override
                 public void onError(Ad ad, AdError adError) {
-                    Log.d("awesome","Error in loading recycler view native ad: "+adError.getErrorMessage());
+                    Log.d("awesome","Games fb native ad error:"+adError.getErrorMessage());
                 }
 
                 @Override
                 public void onAdLoaded(Ad ad) {
-                    Log.d("awesome","Recycler view native ad loaded");
+                    Log.d("awesome","Games fb native ad loaded: "+ad);
+                    nativeAd.unregisterView();
 
+                    // Add the Ad view into the ad container.
                     LinearLayout nativeAdLayout=(LinearLayout)LayoutInflater.from(context).inflate(R.layout.native_ad_layout,(LinearLayout)itemView,false);
                     nativeAdLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
                     ((LinearLayout)itemView).addView(nativeAdLayout);
 
 
-                    // Create native UI using the ad metadata.
-                    ImageView nativeAdIcon = (ImageView) nativeAdLayout.findViewById(R.id.native_ad_icon);
-                    Log.d("awesome","nativeAdIcon width: "+nativeAdIcon.getWidth()+" height: "+nativeAdIcon.getHeight());
-                    TextView nativeAdTitle = (TextView) nativeAdLayout.findViewById(R.id.native_ad_title);
-                    MediaView nativeAdMedia = (MediaView) nativeAdLayout.findViewById(R.id.native_ad_media);
-                    TextView nativeAdSocialContext = (TextView) nativeAdLayout.findViewById(R.id.native_ad_social_context);
-                    TextView nativeAdBody = (TextView) nativeAdLayout.findViewById(R.id.native_ad_body);
-                    Button nativeAdCallToAction = (Button) nativeAdLayout.findViewById(R.id.native_ad_call_to_action);
-
-                    // Set the Text.
-                    nativeAdTitle.setText(nativeAd.getAdTitle());
-                    nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
-                    nativeAdBody.setText(nativeAd.getAdBody());
-                    nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-                    Log.d("awesome","nativeAdTitle width: "+nativeAdTitle.getWidth()+" height: "+nativeAdTitle.getHeight());
-
-                    // Download and display the ad icon.
-                    NativeAd.Image adIcon = nativeAd.getAdIcon();
-                    NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-                    // Download and display the cover image.
-                    nativeAdMedia.setNativeAd(nativeAd);
-
                     // Add the AdChoices icon
                     LinearLayout adChoicesContainer = (LinearLayout)nativeAdLayout.findViewById(R.id.ad_choices_container);
                     AdChoicesView adChoicesView = new AdChoicesView(context, nativeAd, true);
-                    adChoicesContainer.addView(adChoicesView);
+                    adChoicesContainer.addView(adChoicesView, 0);
 
-                    // Register the Title and CTA button to listen for clicks.
+                    // Create native UI using the ad metadata.
+                    AdIconView nativeAdIcon = nativeAdLayout.findViewById(R.id.native_ad_icon);
+                    TextView nativeAdTitle = nativeAdLayout.findViewById(R.id.native_ad_title);
+                    MediaView nativeAdMedia = nativeAdLayout.findViewById(R.id.native_ad_media);
+                    TextView nativeAdSocialContext = nativeAdLayout.findViewById(R.id.native_ad_social_context);
+                    TextView nativeAdBody = nativeAdLayout.findViewById(R.id.native_ad_body);
+                    TextView sponsoredLabel = nativeAdLayout.findViewById(R.id.sponsored_label);
+                    Button nativeAdCallToAction = nativeAdLayout.findViewById(R.id.native_ad_call_to_action);
+
+                    // Set the Text.
+                    nativeAdTitle.setText(nativeAd.getAdvertiserName());
+                    nativeAdBody.setText(nativeAd.getAdBodyText());
+                    nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
+                    nativeAdCallToAction.setVisibility(nativeAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
+                    nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
+                    sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
+
+                    // Create a list of clickable views
                     List<View> clickableViews = new ArrayList<>();
                     clickableViews.add(nativeAdTitle);
                     clickableViews.add(nativeAdCallToAction);
-                    nativeAd.registerViewForInteraction(itemView,clickableViews);
-                    Log.d("awesome","nativeAdLayout: "+nativeAdLayout.getLayoutParams().height+" width:"+nativeAdLayout.getLayoutParams().width);
 
+                    // Register the Title and CTA button to listen for clicks.
+                    nativeAd.registerViewForInteraction(
+                            nativeAdLayout,
+                            nativeAdMedia,
+                            nativeAdIcon,
+                            clickableViews);
                 }
 
                 @Override
                 public void onAdClicked(Ad ad) {
-                    Log.d("awesome","recycler view native ad clicked");
+                    Log.d("awesome","Games fb native ad clicked");
                 }
 
                 @Override
                 public void onLoggingImpression(Ad ad) {
-                    Log.d("awesome","recycler view native ad impression");
+                    Log.d("awesome","Games fb native ad logging impression");
                 }
             });
-
             nativeAd.loadAd();
         }
-    }*/
-
+    }
 
     @Override
     public int getItemCount() {
@@ -202,24 +222,12 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public int getItemViewType(int position) {
 
         switch (position){
-            /*case 1:
-                return FB_AD_VIEW;
-            case 3:
-                return FB_AD_VIEW;
-            case 5:
-                return FB_AD_VIEW;*/
-//            case 1:
-//                return APPODEAL_AD_VIEW;
-//            case 3:
-//                return APPODEAL_AD_VIEW;
-//            case 5:
-//                return APPODEAL_AD_VIEW;
             case 1:
-                return FB_BANNER_AD_VIEW;
+                return ADMOB_VIEW;
             case 3:
-                return FB_BANNER_AD_VIEW;
+                return ADMOB_VIEW;
             case 5:
-                return FB_BANNER_AD_VIEW;
+                return ADMOB_VIEW;
             default:
                 return GAME_VIEW;
         }
@@ -232,22 +240,17 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case GAME_VIEW:
                 View gameView=LayoutInflater.from(parent.getContext()).inflate(R.layout.game_row_view,null);
                 return new GameViewHolder(gameView);
-            /*case FB_AD_VIEW:
+            case FB_AD_VIEW:
                 View fbAdView=LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.native_ad_container,null)
                         .findViewById(R.id.native_ad_container);
-                return new FbAdViewHolder(fbAdView);*/
-            case FB_BANNER_AD_VIEW:
-                View fbBannerAdView=LayoutInflater.from(parent.getContext()).inflate(R.layout.fb_banner_ad_layout,null);
-                return new FbBannerAdViewHolder(fbBannerAdView);
-
-//            case APPODEAL_AD_VIEW:
-//                View appodealAdView=LayoutInflater
-//                        .from(parent.getContext())
-//                        .inflate(R.layout.native_ad_container,null)
-//                        .findViewById(R.id.native_ad_container);
-//                return new AppodealAdViewHolder(appodealAdView);
+                return new FbAdViewHolder(fbAdView);
+            case ADMOB_VIEW:
+                View admobAdView=LayoutInflater
+                        .from(context)
+                        .inflate(R.layout.admob_ad_layout,null);
+                return new AdmobViewHolder(admobAdView);
             default:
                 Log.d("awesome","Default view");
                 return null;
@@ -294,41 +297,31 @@ public class GamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ((GameViewHolder) holder).txtTime.setBackground(context.getResources().getDrawable(R.drawable.frame_background));
             }
 
-            final AdView adView=new AdView(context);
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            /*String fragment_tag=((MainActivity)context).getSupportFragmentManager().getFragments().get(0).getTag();
-            Log.d("awesome","fragment_tag="+fragment_tag);
-            if(fragment_tag.equalsIgnoreCase("previous")){
-                Log.d("awesome","Setting ad id for previous");
-                adView.setAdUnitId(context.getResources().getString(R.string.admob_previous));
-            }
-            else if(fragment_tag.equalsIgnoreCase("todays")){
-                adView.setAdUnitId(context.getResources().getString(R.string.admob_todays));
-            }*/
-
-            adView.setAdUnitId(context.getResources().getString(R.string.sep_banner_admob));
-
-            ((GameViewHolder) holder).adRelativeLayout.addView(adView);
-
-            AdRequest adRequest = new AdRequest.Builder().addTestDevice("493C01A0BB55FCED482A594F8E4023E0").build();
-            adView.loadAd(adRequest);
-
-            adView.setAdListener(new com.google.android.gms.ads.AdListener(){
+            final RelativeLayout adViewContainer=((GameViewHolder)holder).adRelativeLayout;
+            final com.facebook.ads.AdView adView=new com.facebook.ads.AdView(context,fbBannerAdId, com.facebook.ads.AdSize.BANNER_HEIGHT_50);
+            adViewContainer.addView(adView);
+            adView.setAdListener(new AdListener() {
                 @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                    Log.d("awesome","Smart banner loaded");
-                    Log.d("awesome","Relative layout :"+((GameViewHolder) holder).adRelativeLayout.getLayoutParams().width+"*"+((GameViewHolder) holder).adRelativeLayout.getLayoutParams().height);
+                public void onError(Ad ad, AdError adError) {
+                    Log.d("awesome","Games adapter fbBannerAd error:"+adError.getErrorMessage());
                 }
 
                 @Override
-                public void onAdFailedToLoad(int i) {
-                    super.onAdFailedToLoad(i);
-                    Log.d("awesome","Error in loading smart banners: "+i);
+                public void onAdLoaded(Ad ad) {
+                    Log.d("awesome","Games adapter fbBannerAd loaded:"+ad);
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+                    Log.d("awesome","Games adapter fbBannerAd clicked");
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+                    Log.d("awesome","Games adapter fbBannerAd impression");
                 }
             });
-
+            adView.loadAd();
         }else{
             Log.d("awesome","index out of bounds");
         }

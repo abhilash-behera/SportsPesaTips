@@ -18,17 +18,22 @@ import com.football.predictions.R;
 
 public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
-    private static final String TAG = "Android News App";
+    private static final String TAG = "awesome";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        try{
+            //It is optional
+            Log.d(TAG, "From: " + remoteMessage.getFrom());
+            Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
 
-        //It is optional
-        Log.e(TAG, "From: " + remoteMessage.getFrom());
-        Log.e(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+            //Calling method to generate notification
+            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+        }catch (Exception e){
+            Log.d("awesome","some error occured"+e.toString());
+        }
 
-        //Calling method to generate notification
-        sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+
     }
 
     //This method is only generating push notification
