@@ -81,6 +81,6 @@
 
     <item android:checkable="false"
         android:enabled="false"
-        android:title="v3.9" />
+        android:title="v4.0" />
 
 </menu>
