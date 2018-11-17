@@ -22,13 +22,13 @@ repositories {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.football.predictions"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 21
-        versionName "4.0"
+        versionCode 24
+        versionName "4.3"
         multiDexEnabled true
     }
     buildTypes {
@@ -38,10 +38,13 @@ android {
         }
     }
 
-    packagingOptions{
-        exclude "publicsuffixes.gz"
-    }
+//    packagingOptions{
+//        exclude "publicsuffixes.gz"
+//    }
 
+    packagingOptions {
+        pickFirst 'publicsuffixes.gz'
+    }
 }
 
 repositories {
@@ -52,7 +55,6 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.facebook.android:audience-network-sdk:5.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
@@ -69,10 +71,30 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
-    implementation 'com.google.android.gms:play-services-ads:16.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.4'
-    implementation(name: 'presage-moat-3.0.23-3.0.14', ext: 'aar')
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+
+    // App mediation
+    implementation 'com.google.android.gms:play-services-ads:17.1.0'
+    implementation (name:'adcolony-3.3.3', ext:'aar')
+    implementation (name:'am-android-sdk-1.11.4',ext:'aar')
+    implementation (name:'AudienceNetwork-4.28.2',ext:'aar')
+    implementation (name:'mobvista-alphab-8.11.2',ext:'aar')
+    implementation (name:'mobvista-common-8.11.2',ext:'aar')
+    implementation (name:'mobvista-interstitial-8.11.2',ext:'aar')
+    implementation (name:'mobvista-interstitialvideo-8.11.2',ext:'aar')
+    implementation (name:'mobvista-mvdownloads-8.11.2',ext:'aar')
+    implementation (name:'mobvista-mvjscommon-8.11.2',ext:'aar')
+    implementation (name:'mobvista-mvnative-8.11.2',ext:'aar')
+    implementation (name:'mobvista-nativeex-8.11.2',ext:'aar')
+    implementation (name:'mobvista-playercommon-8.11.2',ext:'aar')
+    implementation (name:'mobvista-reward-8.11.2',ext:'aar')
+    implementation (name:'mobvista-videocommon-8.11.2',ext:'aar')
+    implementation (name:'mobvista-videofeeds-8.11.2',ext:'aar')
+    implementation (name:'mobvista-videojs-8.11.2',ext:'aar')
+    implementation (name:'mytarget-sdk-5.1.2',ext:'aar')
+    implementation (name:'unity-ads-2.2.1',ext:'aar')
+    implementation 'com.android.billingclient:billing:1.2'
 
 }
 

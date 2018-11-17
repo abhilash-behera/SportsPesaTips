@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="132dp">
 
-    <com.google.android.gms.ads.NativeExpressAdView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/nativeAd"
-        ads:adSize="FULL_WIDTHx132"
-        ads:adUnitId="abc"/>
+    <!--<com.google.android.gms.ads.NativeExpressAdView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/nativeAd"-->
+        <!--ads:adSize="FULL_WIDTHx132"-->
+        <!--ads:adUnitId="abc"/>-->
 </LinearLayout>

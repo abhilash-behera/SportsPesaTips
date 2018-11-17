@@ -3,6 +3,7 @@ package com.football.predictions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,16 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.football.predictions.retrofit.ApiClient;
 import com.football.predictions.retrofit.GameResponse;
 
 import java.util.ArrayList;
 
-import io.presage.Presage;
-import io.presage.common.AdConfig;
-import io.presage.common.network.models.RewardItem;
-import io.presage.interstitial.optinvideo.PresageOptinVideo;
-import io.presage.interstitial.optinvideo.PresageOptinVideoCallback;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,7 +48,11 @@ public class todays extends Fragment {
     private ArrayList<String> nativeAdIds=new ArrayList<>();
 
     private RecyclerView recyclerView;
-    private PresageOptinVideo presageOptinVideo;
+    /*private PresageOptinVideo presageOptinVideo;
+    private InterstitialAd interstitialAd;*/
+    Runnable runnable;
+    Handler handler;
+
 
 
 
@@ -64,7 +65,7 @@ public class todays extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Presage.getInstance().start("272929", getActivity());
+        //Presage.getInstance().start("272929", getActivity());
         rootView = inflater.inflate(R.layout.fragment_previous, container, false);
         txtError=rootView.findViewById(R.id.txtError);
 
@@ -76,7 +77,7 @@ public class todays extends Fragment {
             @Override
             public void onClick(View v) {
                 if(currentPage==totalPageCount-1){
-                    showOptInVideo(getResources().getString(R.string.opt_in_video));
+                    //showOptInVideo(getResources().getString(R.string.opt_in_video));
                 }
                 if(currentPage<totalPageCount){
                     currentPage++;
@@ -91,7 +92,7 @@ public class todays extends Fragment {
                             Log.d("pagenation","This is a silly exception");
                         }
                     }
-                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.todays_banner)));
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,getResources().getString(R.string.oct_todays_fb_native),getResources().getString(R.string.oct_todays_admob_banner)));
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }else{
                     Toast.makeText(getActivity(),"You are already on the last page !!!",Toast.LENGTH_LONG).show();
@@ -118,7 +119,7 @@ public class todays extends Fragment {
                             Log.d("pagenation","This is a silly exception");
                         }
                     }
-                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.todays_banner)));
+                    recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,getResources().getString(R.string.oct_todays_fb_native),getResources().getString(R.string.oct_todays_admob_banner)));
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }else{
                     Toast.makeText(getActivity(),"You are already on the first page !!!",Toast.LENGTH_LONG).show();
@@ -201,7 +202,7 @@ public class todays extends Fragment {
                                     Log.d("pagenation","This is a silly exception");
                                 }
                             }
-                            recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,nativeAdIds,getResources().getString(R.string.todays_banner)));
+                            recyclerView.setAdapter(new GamesAdapter(getActivity(),filteredGamesList,getResources().getString(R.string.oct_todays_fb_native),getResources().getString(R.string.oct_todays_admob_banner)));
                             recyclerView.getAdapter().notifyDataSetChanged();
 
                         }
@@ -228,11 +229,32 @@ public class todays extends Fragment {
             }
         });
 
+        /*runnable=new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    showInterstitialAd(getResources().getString(R.string.oct_todays_fb_interstitial));
+
+                }catch (Exception e){
+                    Log.d("awesome","exception in loading toaday's fb interstitial:"+e.toString());
+                }
+
+            }
+        };*/
+        handler=new Handler();
+        handler.postDelayed(runnable,40000);
+
 
         return rootView;
     }
 
-    private void showOptInVideo(String adId) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    /*private void showOptInVideo(String adId) {
         AdConfig adConfig=new AdConfig(adId);
         presageOptinVideo=new PresageOptinVideo(getActivity(),adConfig);
         presageOptinVideo.setOptinVideoCallback(new PresageOptinVideoCallback() {
@@ -280,7 +302,7 @@ public class todays extends Fragment {
             }
         });
         presageOptinVideo.load();
-    }
+    }*/
 
     @JavascriptInterface
     public void resize(final float height) {
@@ -294,4 +316,61 @@ public class todays extends Fragment {
         });
     }
 
+
+/*
+    private void showInterstitialAd(final String interstitialAdId) {
+        interstitialAd = new InterstitialAd(getActivity(), interstitialAdId);
+        interstitialAd.setAdListener(new AbstractAdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                super.onError(ad, adError);
+                if(adError.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
+                    handler=new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showInterstitialAd(interstitialAdId);
+                        }
+                    },30000);
+                }
+                Log.d("awesome","Today's Fragment interestitial ad error: "+adError.getErrorCode()+":-"+adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                super.onAdLoaded(ad);
+                try{
+                    interstitialAd.show();
+                }catch (Exception ignored){}
+
+                Log.d("awesome","Today's Fragment interestitial ad loaded: "+ad);
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                super.onAdClicked(ad);
+                Log.d("awesome","Today's Fragment interestitial ad clicked: "+ad);
+            }
+
+            @Override
+            public void onInterstitialDisplayed(Ad ad) {
+                super.onInterstitialDisplayed(ad);
+                Log.d("awesome","Today's Fragment interestitial ad displayed: "+ad);
+            }
+
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+                super.onInterstitialDismissed(ad);
+                Log.d("awesome","Today's Fragment interestitial ad dismissed: "+ad);
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                super.onLoggingImpression(ad);
+                Log.d("awesome","Today's Fragment interestitial ad impression: "+ad);
+            }
+        });
+        interstitialAd.loadAd();
+    }
+*/
 }

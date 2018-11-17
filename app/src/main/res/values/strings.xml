@@ -6,7 +6,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="facebook_app_id">342304149587187</string>
     <string name="fb_login_protocol_scheme">fb342304149587187</string>
 
     <!--Previous Games-->
@@ -71,5 +70,26 @@
     <!--Fb banner ad ids-->
     <string name="todays_banner">342304149587187_482094095608191</string>
     <string name="previous_banner">342304149587187_482094325608168</string>
+
+    <!--fb ads for october-->
+    <string name="oct_previous_fb_interstitial">342304149587187_492442921239975</string>
+    <string name="oct_previous_fb_native">342304149587187_492442657906668</string>
+    <string name="oct_todays_fb_interstitial">342304149587187_492443031239964</string>
+    <string name="oct_todays_fb_native">342304149587187_492442851239982</string>
+    <string name="oct_2_min_interstitial">342304149587187_492470454570555</string>
+    <string name="oct_4_min_interstitial">342304149587187_492470974570503</string>
+
+    <!--admob ads for october-->
+    <string name="oct_admob_interstitial">ca-app-pub-1591993844409076/9137871342</string>
+    <string name="oct_previous_admob_banner">ca-app-pub-1591993844409076/9413203517</string>
+    <string name="oct_todays_admob_banner">ca-app-pub-1591993844409076/6156484780</string>
+
+
+
+    <!--App Mediation-->
+    <string name="app_mediation_app_key">58e4ee68-8179-4456-a62f-4c8e6343db5c</string>
+    <string name="admob_app_id">ca-app-pub-1591993844409076~5581898660</string>
+
+    <string name="facebook_app_id">120406488446245</string>
 
 </resources>

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -22,36 +23,114 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.facebook.ads.AbstractAdListener;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.InterstitialAd;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.appmediation.sdk.AMInterstitial;
+import com.appmediation.sdk.AMSDK;
+import com.appmediation.sdk.listeners.AMListener;
+import com.appmediation.sdk.models.AMError;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import io.presage.Presage;
-import io.presage.interstitial.PresageInterstitial;
-import io.presage.interstitial.PresageInterstitialCallback;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private InterstitialAd interstitialAd;
+    /*private InterstitialAd interstitialAd;
     private InterstitialAd interstitialAd60;
     private com.google.android.gms.ads.InterstitialAd admobInterstitial;
-    private PresageInterstitial presageInterstitial;
+    private PresageInterstitial presageInterstitial;*/
+    private Handler handler;
+    private BillingClient mBillingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(com.football.predictions.R.anim.slide_in, R.anim.slide_out);
         super.onCreate(savedInstanceState);
 
-        Presage.getInstance().start("272929", this); // this = current activity
+        mBillingClient = BillingClient.newBuilder(MainActivity.this).setListener(new PurchasesUpdatedListener() {
+            @Override
+            public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
+                Log.d("awesome","Purchase updated: "+responseCode);
+            }
+        }).build();
+
+        mBillingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
+                if (billingResponseCode == BillingClient.BillingResponse.OK) {
+                    // The billing client is ready. You can query purchases here.
+                    List skuList = new ArrayList<>();
+                    skuList.add("vip_access_weekly");
+                    SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+                    params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
+                    mBillingClient.querySkuDetailsAsync(params.build(),
+                            new SkuDetailsResponseListener() {
+                                @Override
+                                public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
+                                    // Process the result.
+                                    if (responseCode == BillingClient.BillingResponse.OK
+                                            && skuDetailsList != null) {
+                                        for (SkuDetails skuDetails : skuDetailsList) {
+                                            String sku = skuDetails.getSku();
+                                            String price = skuDetails.getPrice();
+                                            Log.d("awesome","SKU: "+sku+" price: "+price);
+                                        }
+                                    }
+                                }
+                            });
+                }else{
+                    Log.d("awesome","billingResponseError: "+billingResponseCode);
+                }
+            }
+            @Override
+            public void onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        });
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
+        AMSDK.init(this, getResources().getString(R.string.app_mediation_app_key));
+
+
+        AMInterstitial.setListener(new AMListener() {
+            @Override
+            public void onLoaded() {
+                Log.d("awesome", "onLoaded");
+            }
+            @Override
+            public void onFailed(AMError error) {
+                Log.d("awesome", "onFailed: " + error.name());
+            }
+
+            @Override
+            public void onShowed() {
+                Log.d("awesome", "onShowed");
+            }
+
+            @Override
+            public void onClosed() {
+                Log.d("awesome", "onClosed");
+            }
+
+            @Override
+            public void onClicked() {
+                Log.d("awesome", "onClicked");
+            }
+        });
+
+        //Presage.getInstance().start("272929", this); // this = current activity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,23 +166,36 @@ public class MainActivity extends AppCompatActivity
             previous previous=new previous();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_main, previous, "previous").commit();
-            Handler handler=new Handler();
-
-
-
+            handler=new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //showInterstitialAd(getResources().getString(R.string.inter_15_sec)); //main activity interstitial
-                    //showInterstitialAd(getResources().getString(R.string.inter_1));
-                    showInterstitialAd(getResources().getString(R.string.sep_15_sec_inter));
+                    AMInterstitial.show(MainActivity.this);
                 }
             },15000);
 
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showAdmobInterstitial(getResources().getString(R.string.inter_60_sec_admob));
+                    showAppMediationRepeatingInterstitial(60000);
+                }
+            },60000);
+
+
+
+            /*handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //showInterstitialAd(getResources().getString(R.string.inter_15_sec)); //main activity interstitial
+                    //showInterstitialAd(getResources().getString(R.string.inter_1));
+                    showInterstitialAd(getResources().getString(R.string.oct_2_min_interstitial));
+                }
+            },120000);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showAdmobInterstitial(getResources().getString(R.string.oct_admob_interstitial));
 
                 }
             },60000);
@@ -113,27 +205,45 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     //showInterstitialAd60(getResources().getString(R.string.fb_inter_60_sec));
                     //showInterstitialAd60(getResources().getString(R.string.inter_1));
-                    showInterstitialAd60(getResources().getString(R.string.sep_every_15_sec_inter));
+                    showInterstitialAd60(getResources().getString(R.string.oct_4_min_interstitial));
                 }
-            },60000);
+            },240000);
 
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showPresageInterestitial(getResources().getString(R.string.presage_interstitial));
                 }
-            },30000);
+            },30000);*/
         }
     }
 
-    private void showInterstitialAd60(final String adId) {
+    private void startPurchase(){
+        BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                .setSku("gas")
+                .setType(BillingClient.SkuType.INAPP) // SkuType.SUB for subscription
+                .build();
+        int responseCode = mBillingClient.launchBillingFlow(MainActivity.this,flowParams);
+    }
+
+    private void showAppMediationRepeatingInterstitial(final long repeatDuration){
+        AMInterstitial.show(MainActivity.this);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showAppMediationRepeatingInterstitial(repeatDuration);
+            }
+        },repeatDuration);
+    }
+
+    /*private void showInterstitialAd60(final String adId) {
         interstitialAd60 = new InterstitialAd(this, adId);
         interstitialAd60.setAdListener(new AbstractAdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
                 super.onError(ad, adError);
                 if(adError.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                    Handler handler=new Handler();
+                    handler=new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -149,13 +259,7 @@ public class MainActivity extends AppCompatActivity
                 super.onAdLoaded(ad);
                 if(interstitialAd60.isAdLoaded()){
                     interstitialAd60.show();
-                    Handler handler=new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            showInterstitialAd60(adId);
-                        }
-                    },60000);
+
                 }
 
                 Log.d("awesome","Main activity interestitial ad loaded: "+ad);
@@ -227,7 +331,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onAdError(int i) {
                 Log.d("awesome","presage interstitial ad error: "+i);
-                Handler handler=new Handler();
+                handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -237,7 +341,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         presageInterstitial.load();
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -299,9 +403,9 @@ public class MainActivity extends AppCompatActivity
                     previous Previous = new previous();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, Previous, "previous").commit();
+                    AMInterstitial.show(MainActivity.this);
                     //showInterstitialAd(getResources().getString(R.string.previous_inter)); //previous interstitial
                     //showInterstitialAd(getResources().getString(R.string.inter_1));
-                    showInterstitialAd(getResources().getString(R.string.sep_previous_inter));
                 }
             }
         }
@@ -315,9 +419,9 @@ public class MainActivity extends AppCompatActivity
                     todays Todays = new todays();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_main, Todays, "todays").commit();
+                    AMInterstitial.show(MainActivity.this);
                     //showInterstitialAd(getResources().getString(R.string.todays_inter)); //todays interstitial
                     //showInterstitialAd(getResources().getString(R.string.inter_1));
-                    showInterstitialAd(getResources().getString(R.string.sep_todays_inter));
                 }
             }
         }
@@ -366,14 +470,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void showInterstitialAd(final String interstitialAdId) {
+    /*private void showInterstitialAd(final String interstitialAdId) {
         interstitialAd = new InterstitialAd(this, interstitialAdId);
         interstitialAd.setAdListener(new AbstractAdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
                 super.onError(ad, adError);
                 if(adError.getErrorCode()==AdError.NO_FILL_ERROR_CODE){
-                    Handler handler=new Handler();
+                    handler=new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -431,7 +535,7 @@ public class MainActivity extends AppCompatActivity
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
                 Log.d("awesome","Failed to load admob interstitial: "+i);
-                Handler handler=new Handler();
+                handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -447,7 +551,7 @@ public class MainActivity extends AppCompatActivity
                 admobInterstitial.show();
             }
         });
-    }
+    }*/
 
 
     public boolean isConnected(Context context) {
@@ -497,9 +601,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if(interstitialAd!=null){
-//            interstitialAd.destroy();
-//        }
+        handler.removeCallbacksAndMessages(null);
 
     }
 }

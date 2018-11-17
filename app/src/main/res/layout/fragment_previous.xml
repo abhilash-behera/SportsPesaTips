@@ -29,7 +29,8 @@
         android:layout_height="match_parent"
         android:id="@+id/recyclerView"
         android:layout_below="@+id/webView"
-        android:layout_above="@+id/pagenationLayout"/>
+        android:layout_above="@+id/pagenationLayout"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

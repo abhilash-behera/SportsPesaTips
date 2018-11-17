@@ -15,16 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdIconView;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.AdView;
-import com.facebook.ads.MediaView;
-import com.facebook.ads.NativeAd;
-import com.facebook.ads.NativeAdListener;
-import com.football.predictions.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +23,9 @@ public class about extends AppCompatActivity {
     //private AdView mAdView;
     //private InterstitialAd mInterstitialAd;
 
-    private AdView bannerAdView;
-
-    private NativeAd nativeAd;
+//    private AdView bannerAdView;
+//
+//    private NativeAd nativeAd;
     private LinearLayout nativeAdContainer;
     private LinearLayout adView;
 
@@ -95,12 +85,12 @@ public class about extends AppCompatActivity {
         wv.getSettings().setJavaScriptEnabled(true);
         wv.loadDataWithBaseURL(null, htmlcode, "text/html", "utf-8", null);
 
-        showBannerAd();
-        showNativeAd();
+        /*showBannerAd();
+        showNativeAd();*/
 
     }
 
-    private void showBannerAd() {
+    /*private void showBannerAd() {
         RelativeLayout adViewContainer =findViewById(R.id.adViewContainer);
         try{
             bannerAdView = new com.facebook.ads.AdView(about.this, getResources().getString(R.string.sep_about_banner), com.facebook.ads.AdSize.BANNER_HEIGHT_50);
@@ -210,5 +200,5 @@ public class about extends AppCompatActivity {
             }
         });
         nativeAd.loadAd();
-    }
+    }*/
 }
